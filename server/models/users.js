@@ -16,7 +16,15 @@ const UserSchema = new Schema({
     isSeller: {
         type: Boolean,
         default: false
-    },    
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
     created: {
         type: Date,
         default: Date.now
