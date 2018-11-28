@@ -3,6 +3,9 @@ module.exports = function (appContext) {
     const module = {};
 
     /* MongodB Models */
+    const Token = require("../models/token");
+    module.Token = Token;
+
     const Product = require('../models/product');
     module.Product = Product;
 
