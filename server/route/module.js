@@ -15,7 +15,7 @@ module.exports = function (appContext) {
     const Order = require('../models/order');
     module.Order = Order;
 
-    const User = require('../models/user');
+    const User = require('../models/users');
     module.User = User;
 
     /* Other Routing Files */

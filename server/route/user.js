@@ -5,21 +5,40 @@ module.exports = function (module, appContext) {
     const User = module.User;
     const Token = module.Token;
     const checkJWT = require("../util/jwtUtil.js");
+    const {
+        check,
+        validationResult
+    } = require('express-validator/check');
+    const nodemailer = require('nodemailer');
+    const crypto = require('crypto');
 
     /* Signup User */
-    app.post('/signup', (req, res, next) => {
-        req.assert('name', 'Name cannot be blank').notEmpty();
-        req.assert('email', 'Email is not valid').isEmail();
-        req.assert('email', 'Email cannot be blank').notEmpty();
-        req.assert('password', 'Password must be at least 4 characters long').len(4);
-        req.sanitize('email').normalizeEmail({
-            remove_dots: false
-        });
+    app.post('/signup', [
+        check('name').isLength({
+            min: 3
+        }).trim().escape().withMessage('Name Must be at least 3 chars long'),
+        check('email').isEmail().normalizeEmail().withMessage('Enter Valid Email Id'),
+        check('password').isLength({
+            min: 3
+        })
+        .withMessage('Password Must be at least 3 chars long'),
+        check('isSeller').isNumeric().custom(tax => {
+            console.log(tax)
+            if (tax == 0 || tax == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        }).withMessage('Select seller mode')
+    ], (req, res, next) => {
 
-        // Check for validation errors    
-        var errors = req.validationErrors();
-        if (errors) {
-            return res.status(400).send(errors);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.json({
+                code: 400,
+                msg: errors.array()
+            });
         }
 
         const name = req.body.name,
@@ -39,7 +58,7 @@ module.exports = function (module, appContext) {
         }, (err, existingUser) => {
             if (existingUser) {
                 res.json({
-                    success: false,
+                    code: 400,
                     message: 'Account with that email is already exist'
                 });
             } else {
@@ -47,28 +66,32 @@ module.exports = function (module, appContext) {
 
                 var token = jwt.sign({
                     user: user
-                }, CONFIG.SECRET, {
+                }, config.secret, {
                     expiresIn: '7d'
                 });
 
-                var token = new Token({
-                    _userId: user._id,
-                    token: crypto.randomBytes(16).toString('hex')
-                });
+                let validationToken = new Token();
+                validationToken.userId = user._id;
+                validationToken.token = crypto.randomBytes(16).toString('hex');
+                console.log(validationToken);
+                validationToken.save();
 
                 // Send the email
                 var transporter = nodemailer.createTransport({
-                    service: 'Sendgrid',
+                    service: 'gmail',
                     auth: {
-                        user: process.env.SENDGRID_USERNAME,
-                        pass: process.env.SENDGRID_PASSWORD
+                        // user: process.env.SENDGRID_USERNAME,
+                        // pass: process.env.SENDGRID_PASSWORD
+                        user: 'mentorpowersoftware@gmail.com',
+                        pass: 'Mentor@123'
                     }
                 });
                 var mailOptions = {
                     from: 'no-reply@yourwebapplication.com',
                     to: user.email,
                     subject: 'Account Verification Token',
-                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'
+                    //text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + validationToken.token + '.\n'
+                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + validationToken.token + '.\n'
                 };
                 transporter.sendMail(mailOptions, function (err) {
                     if (err) {
@@ -76,6 +99,7 @@ module.exports = function (module, appContext) {
                             msg: err.message
                         });
                     }
+
                     res.json({
                         success: true,
                         message: 'A verification email has been sent to ' + user.email + '.',
@@ -83,30 +107,29 @@ module.exports = function (module, appContext) {
                     });
                     //res.status(200).send('A verification email has been sent to ' + user.email + '.');
                 });
-
-                /* res.json({
-                    success: true,
-                    message: 'Token generated!',
-                    token: token
-                }); */
             }
         });
     });
 
 
     /* Login User */
-    app.post('/login', (req, res, next) => { // Check for validation errors            
-        req.assert('email', 'Email is not valid').isEmail();
-        req.assert('email', 'Email cannot be blank').notEmpty();
-        req.assert('password', 'Password must be at least 4 characters long').len(4);
-        req.sanitize('email').normalizeEmail({
-            remove_dots: false
-        });
-
-        var errors = req.validationErrors();
-        if (errors) {
-            return res.status(400).send(errors);
+    app.post('/login', [
+        check('email').isEmail().normalizeEmail().withMessage('Enter Valid Email Id'),
+        check('password').isLength({
+            min: 3
+        })
+        .withMessage('Password Must be at least 3 chars long'),
+    ], (req, res, next) => {
+        console.log('Login Request ', req.body);
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            console.log(errors.array());
+            return res.json({
+                code: 400,
+                msg: errors.array()
+            });
         }
+
         const email = req.body.email,
             password = req.body.password;
 
@@ -117,7 +140,7 @@ module.exports = function (module, appContext) {
 
             if (!user) {
                 res.json({
-                    success: false,
+                    code: 400,
                     message: 'User not found'
                 });
             } else if (user) {
@@ -125,7 +148,7 @@ module.exports = function (module, appContext) {
 
                 if (!validPassword) {
                     res.json({
-                        success: false,
+                        code: 400,
                         message: 'Wrong password'
                     });
                 } else if (!user.isVerified) {
@@ -133,38 +156,33 @@ module.exports = function (module, appContext) {
                         type: 'not-verified',
                         msg: 'Your account has not been verified.'
                     });
+                } else if (!user.isActive) {
+                    return res.status(401).send({
+                        type: 'not-verified',
+                        msg: 'Your account has deactived. Please contact Store Manager.'
+                    });
                 } else {
                     var token = jwt.sign({
                         user: user
-                    }, CONFIG.SECRET, {
+                    }, config.secret, {
                         expiresIn: '7d'
                     });
 
                     res.json({
-                        success: true,
+                        code: 200,
                         message: 'Token Generated!',
-                        token
+                        token: token
                     });
                 }
             }
         });
     });
 
-    app.post('/confirmation', (req, res, next) => {
-        req.assert('email', 'Email is not valid').isEmail();
-        req.assert('email', 'Email cannot be blank').notEmpty();
-        req.assert('token', 'Token cannot be blank').notEmpty();
-        req.sanitize('email').normalizeEmail({
-            remove_dots: false
-        });
-
-        // Check for validation errors    
-        var errors = req.validationErrors();
-        if (errors) return res.status(400).send(errors);
-
+    app.get('/confirmation/:token', (req, res, next) => {
+        console.log('In confirmation token ', req.params.token);
         // Find a matching token
         Token.findOne({
-            token: req.body.token
+            token: req.params.token
         }, function (err, token) {
             if (!token) return res.status(400).send({
                 type: 'not-verified',
@@ -173,8 +191,7 @@ module.exports = function (module, appContext) {
 
             // If we found a token, find a matching user
             User.findOne({
-                _id: token._userId,
-                email: req.body.email
+                _id: token.userId
             }, function (err, user) {
                 if (!user) return res.status(400).send({
                     msg: 'We were unable to find a user for this token.'
@@ -196,5 +213,12 @@ module.exports = function (module, appContext) {
                 });
             });
         });
+    });
+
+    app.get('/resendToken', (req, res, next) => {
+        console.log('Resend verification token');
+
+        
+
     });
 };
