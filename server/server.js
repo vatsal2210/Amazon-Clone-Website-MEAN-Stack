@@ -9,7 +9,7 @@ const nodemon = require('nodemon');
 require('dotenv').config();
 
 const config = require('./config');
-console.log(process.env.DB_HOST);
+//console.log(process.env.DB_HOST);
 const app = express();
 
 /* Connect Database */
@@ -38,10 +38,6 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', express.static('static'));
-
-app.get('/', function (req, res) {
-    res.send('Hello World');
-});
 
 app.listen(config.port, err => {
     console.log("Server on port " + config.port);

@@ -1,0 +1,10 @@
+<p *ngIf="alert.message">
+  <ngb-alert [type]="alert.messageType" [dismissible]="false">
+    <div *ngIf="isArray">
+      <div *ngFor="let data of alert.message">
+        {{ data.msg }}
+      </div>
+    </div>
+    {{ alert.message }}
+  </ngb-alert>
+</p>
