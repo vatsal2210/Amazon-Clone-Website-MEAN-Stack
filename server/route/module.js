@@ -19,6 +19,7 @@ module.exports = function (appContext) {
     module.User = User;
 
     /* Other Routing Files */
+    const accountRoute = require('./account.js')(module, appContext);
     const userRoute = require("./user.js")(module, appContext);
     const productRoute = require('./products.js')(module, appContext);
     const sellerRoute = require("./seller.js")(module, appContext);

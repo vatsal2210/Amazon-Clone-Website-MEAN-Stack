@@ -4,15 +4,39 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AlertService } from './alert.service';
+import { UserService } from './user.service';
+import { RestapiService } from './restapi.service';
+
+import { LoginComponent } from './login/login.component';
+import { RegistrationComponent } from './registration/registration.component';
+import { HomeComponent } from './home/home.component';
+import { ProfileComponent } from './profile/profile.component';
+import { CartComponent } from './cart/cart.component';
+import { AlertComponent } from './alert/alert.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegistrationComponent,
+    HomeComponent,
+    ProfileComponent,
+    CartComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule.forRoot(),
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [AlertService, UserService, RestapiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

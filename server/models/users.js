@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     name: String,
     password: String,
     picture: String,
-    isSeller: {
+    isManager: {
         type: Boolean,
         default: false
     },
