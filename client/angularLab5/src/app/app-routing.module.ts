@@ -6,7 +6,9 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegistrationComponent } from './registration/registration.component';
-
+import { ManagerComponent } from './manager/manager.component';
+import { UsersComponent } from './admin/users/users.component';
+import { ProductsComponent } from './admin/products/products.component';
 
 const routes: Routes = [
   {
@@ -28,6 +30,18 @@ const routes: Routes = [
   {
     path: 'cart',
     component: CartComponent
+  },
+  {
+    path: 'manager',
+    component: ManagerComponent
+  },
+  {
+    path: 'admin/users',
+    component: UsersComponent
+  },
+  {
+    path: 'admin/products',
+    component: ProductsComponent
   },
   {
     path: '**',

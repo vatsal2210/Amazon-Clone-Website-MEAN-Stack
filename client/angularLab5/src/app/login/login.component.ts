@@ -49,6 +49,11 @@ export class LoginComponent implements OnInit {
         if (data['success']) {
           localStorage.setItem('token', data['token']);
           await this.user.getProfile();
+          console.log(this.user.user.isManager);
+          if (this.user.user.isManager) {
+            console.log('Manager login');
+            this.router.navigate(['manager']);
+          }
           this.router.navigate(['/']);
         } else {
           this.alert.error(data['message']);

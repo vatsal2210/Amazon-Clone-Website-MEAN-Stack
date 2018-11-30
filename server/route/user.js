@@ -13,9 +13,7 @@ module.exports = function (module, appContext) {
     const crypto = require('crypto');
 
     /* User Dashboard */
-    app.get('/api/profile', checkJWT, (req, res, next) => {
-        console.log('Profile Page body', req.body);
-        console.log('Profile Page data ', req.decoded.user._id);
+    app.get('/api/profile', checkJWT, (req, res, next) => {        
         User.findOne({
             _id: req.decoded.user._id
         }, (err, user) => {
@@ -37,9 +35,7 @@ module.exports = function (module, appContext) {
 
     /* Store Manager Dashboard */
     app.get('/admin', (req, res, next) => {
-        console.log('admin Page');
-        res.send('admin page');
-
+        console.log('admin request found');
         User.find((err, result) => {
             console.log('User details found ', result);
             if (err) {
