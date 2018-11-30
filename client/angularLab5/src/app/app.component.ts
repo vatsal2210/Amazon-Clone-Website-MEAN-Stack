@@ -16,6 +16,11 @@ export class AppComponent {
     this.user.getProfile();
   }
 
+  get token() {
+    const token = localStorage.getItem('token');
+    return token;
+  }
+
   collapse() {
     this.isCollpased = true;
   }

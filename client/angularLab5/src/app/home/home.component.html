@@ -1,3 +1,30 @@
-<p>
-  home works!
-</p>
+<section id="home">
+  <div class="container-fluid d-none d-md-block">
+    <div class="container p-5">
+      <app-alert></app-alert>
+      <p class="lead">
+        <b>Recommended Deals:</b>
+      </p>
+    </div>
+
+    <div class="row">
+      <div *ngIf="!products" class="m-auto">
+        <h1 class="text-center display-3 mt-5">
+          <i class="fa fa-refresh fa-spin"></i>
+        </h1>
+      </div>
+
+      <div *ngFor="let product of products" class="col-md-3 mb-5">
+        <a routerLink="/product/{{ product._id }}">
+          <div class="card bg-light">
+            <img src="{{ product.image }}" alt="product" class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title">{{ product.title }}</h5>
+              <p class="card-text">{{ product.price | currency }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

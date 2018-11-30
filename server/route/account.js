@@ -171,6 +171,7 @@ module.exports = function (module, appContext) {
         });
     });
 
+    /* Token Confirmaiton */
     app.get('/api/confirmation/:token', (req, res, next) => {
         console.log('In confirmation token ', req.params.token);
         // Find a matching token
@@ -212,6 +213,7 @@ module.exports = function (module, appContext) {
         });
     });
 
+    /* Resend verification Email */
     app.get('/api/resendToken', (req, res, next) => {
         console.log('Resend verification token');
 
@@ -276,7 +278,5 @@ module.exports = function (module, appContext) {
 
         });
         */
-
-
     });
 };

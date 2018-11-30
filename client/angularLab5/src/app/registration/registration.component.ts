@@ -58,12 +58,12 @@ export class RegistrationComponent implements OnInit {
           password: this.password,
         });
 
-        if (data['code'] === 200) {
+        if (data['success']) {
           localStorage.setItem('token', data['token']);
           await this.user.getProfile();
-          this.router.navigate(['profile'])
+          this.router.navigate(['login'])
             .then(() => {
-              this.alert.success('Registration Successfully! Please enter your shipping address below!');
+              this.alert.success(data['message']);
             })
             .catch(error => this.alert.error(error));
         } else {

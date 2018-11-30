@@ -18,6 +18,9 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CartComponent } from './cart/cart.component';
 import { AlertComponent } from './alert/alert.component';
+import { ManagerComponent } from './manager/manager.component';
+import { UsersComponent } from './admin/users/users.component';
+import { ProductsComponent } from './admin/products/products.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,10 @@ import { AlertComponent } from './alert/alert.component';
     HomeComponent,
     ProfileComponent,
     CartComponent,
-    AlertComponent
+    AlertComponent,
+    ManagerComponent,
+    UsersComponent,
+    ProductsComponent
   ],
   imports: [
     BrowserModule,
