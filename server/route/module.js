@@ -23,5 +23,6 @@ module.exports = function (appContext) {
     const userRoute = require("./user.js")(module, appContext);
     const productRoute = require('./products.js')(module, appContext);
     const sellerRoute = require("./seller.js")(module, appContext);
+    const adminRoute = require("./admin.js")(module, appContext);
 
 };

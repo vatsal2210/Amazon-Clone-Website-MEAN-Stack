@@ -9,17 +9,15 @@ import { Router } from '@angular/router';
 })
 export class UserService {
   user: any;
-  isManager = true;
+  isManager;
 
   constructor(private rest: RestapiService, private alert: AlertService, private router: Router) { }
 
   async getProfile() {
-    console.log('Get User Profile data');
+    console.log('Get User Profile data ');
     try {
       if (localStorage.getItem('token')) {
-        const data = await this.rest.get(
-          'http://localhost:8080/api/profile'
-        );
+        const data = await this.rest.get('/api/profile');
         if (data['user'] == null) {
           this.user = '';
           localStorage.clear();
@@ -27,19 +25,26 @@ export class UserService {
         } else {
           this.user = data['user'];
           console.log('User Details found ', this.user);
+
           if (this.user.isManager) {
             console.log('Manager login');
             this.isManager = true;
-            this.router.navigate(['manager']);
+            this.router.navigate(['/manager']);
           } else {
             console.log('Normal User');
+            this.isManager = false;
             this.router.navigate(['/']);
           }
         }
+      } else {
+        console.log('Token not found');
+        this.router.navigate(['login']);
       }
     } catch (error) {
       console.log('Token not found! ', error);
       this.alert.error(error);
+      localStorage.clear();
+      this.router.navigate(['']);
     }
   }
 }

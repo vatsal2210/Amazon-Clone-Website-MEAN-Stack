@@ -14,6 +14,7 @@ module.exports = function (module, appContext) {
     const crypto = require('crypto');
     const async = appContext.async;
 
+    /* Get Product List */
     app.get('/api/products', (req, res, next) => {
         console.log('Products page found');
         const perPage = 10;
@@ -45,11 +46,29 @@ module.exports = function (module, appContext) {
             console.log('products ', products);
             res.json({
                 success: true,
-                message: 'category',
                 products,
                 totalProducts: totalProducts,
                 pages: Math.ceil(totalProducts / perPage)
             });
         });
+    });
+
+    /* Find Product Details */
+    app.get('/api/findProduct/:id', function (req, res) {
+        console.log('Find Product Details ', req.params.id);
+        Product.find({
+                _id: req.params.id
+            },
+            function (err, product) {
+                if (err) {
+                    console.log('err found ', err);
+                } else {
+                    console.log('Found details of a product ', product);
+                    res.send({
+                        success: true,
+                        product
+                    });
+                }
+            });
     });
 };

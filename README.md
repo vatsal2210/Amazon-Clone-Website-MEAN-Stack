@@ -6,3 +6,6 @@ URL: https://codemoto.io/coding/nodejs/email-verification-node-express-mongodb
 
 NavBar Header:
 https://www.w3schools.com/bootstrap4/bootstrap_navbar.asp
+
+E-commerce View:
+https://mdbootstrap.com/docs/angular/sections/e-commerce/#APIref

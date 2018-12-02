@@ -14,10 +14,24 @@ const ProductSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }],
-    image: String,
+    image: {
+        type: String,
+        default: '',
+    },
     title: String,
     description: String,
-    price: Number,
+    tax: {
+        type: Number,
+        default: 0,
+    },
+    quantity: {
+        type: Number,
+        default: 0,
+    },
+    price: {
+        type: Number,
+        default: 0,
+    },
     created: {
         type: Date,
         default: Date.now

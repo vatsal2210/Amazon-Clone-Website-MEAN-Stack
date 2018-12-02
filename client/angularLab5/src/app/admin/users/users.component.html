@@ -1,3 +1,82 @@
-<p>
-  users works!
-</p>
+<section id="users">
+  <div class="container p-5">
+    <app-alert></app-alert>
+    <b>User Details:</b>
+  </div>
+
+  <div class="container-fluid">
+    <!-- Card -->
+    <div class="row">
+      <div *ngIf="!users" class="m-auto">
+        <h1 class="text-center display-3 mt-5">
+          <i class="fa fa-refresh fa-spin"></i>
+        </h1>
+      </div>
+
+      <div class='col-md-3 mb-5' *ngFor="let user of users;">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src={{user.picture}} alt='Image' />
+          <div class="card-body">
+            <h5 class="card-title">{{user.name}}</h5>
+            <br />
+            <div>
+              <span style="padding-right:10px;">Status</span>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="defaultUnchecked{{user._id}}" name="defaultExampleRadios{{user._id}}"
+                  mdbInputDirective [checked]="user.isActive == true" [value]='true' (click)="changeStatus(user._id, 1);frame1.show()">
+                <label class="
+                  custom-control-label" for="defaultUnchecked{{user._id}}">Active</label>
+              </div>
+
+              <!-- Default checked -->
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="defaultChecked{{user._id}}" name="defaultExampleRadios{{user._id}}"
+                  mdbInputDirective [checked]="user.isActive == false" [value]='false' (click)="changeStatus(user._id, 0);frame1.show()">
+                <label class=" custom-control-label" for="defaultChecked{{user._id}}">Deactive</label>
+              </div>
+            </div>
+            <br />
+            <div>
+              <span style="padding-right:10px;">Manager</span>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="defaultUnchecked1{{user._id}}" name="defaultExampleRadios1{{user._id}}"
+                  checked mdbInputDirective [checked]="user.isManager == true" [value]='true' (click)="changeManagerStatus(user._id, 1);frame1.show()">
+                <label class="custom-control-label" for="defaultUnchecked1{{user._id}}">Yes</label>
+              </div>
+
+              <!-- Default checked -->
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="defaultChecked1{{user._id}}" name="defaultExampleRadios1{{user._id}}"
+                  mdbInputDirective [checked]="user.isManager == false" [value]='false' (click)="changeManagerStatus(user._id, 0);frame1.show()">
+                <label class=" custom-control-label" for="defaultChecked1{{user._id}}">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #frame1="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+      <div class="modal-content text-center">
+        <div class="modal-header d-flex justify-content-center">
+          <p class="heading">Are you sure?</p>
+        </div>
+
+        <div class="modal-body">
+          <i class="fa fa-question fa-4x animated rotateIn"></i>
+        </div>
+
+        <div class="modal-footer flex-center">
+          <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="confirmation();frame1.hide()">Yes</a>
+          <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect data-dismiss="modal"
+            #dismissFrame1 (click)="frame1.hide()">Close</button>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+
+</section>

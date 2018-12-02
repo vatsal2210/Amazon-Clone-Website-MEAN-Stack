@@ -1,3 +1,138 @@
-<p>
-  products works!
-</p>
+<section id="registrationPage" style="padding:20px;">
+  <app-alert></app-alert>
+  <div class="manager-modal">
+    <h2 class="cart-header" style="margin-left:15px;"> Manager Dashboard
+      <button type="button" mdbBtn color="default" rounded="true" data-toggle="modal" (click)="frame.show(); clearForm()"
+        mdbWavesEffect>Add Product</button>
+    </h2>
+    <hr />
+    <div class="table-wrapper table-responsive-md">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th> # </th>
+            <th class="th-lg">
+              <a (click)="sortBy('name')">Name
+                <mdb-icon icon="sort" class="ml-1"></mdb-icon></a>
+            </th>
+            <th class="th-lg">
+              <a (click)="sortBy('quantity')">Quantity
+                <mdb-icon icon="sort" class="ml-1"></mdb-icon></a>
+            </th>
+            <th class="th-lg">
+              <a (click)="sortBy('price')">Price
+                <mdb-icon icon="sort" class="ml-1"></mdb-icon></a>
+            </th>
+            <th class="th-lg">
+              <a (click)="sortBy('tax')">Tax
+                <mdb-icon icon="sort" class="ml-1"></mdb-icon></a>
+            </th>
+            <th class="th-lg"> Action </th>
+          </tr>
+        </thead>
+        <tbody *ngIf='products'>
+          <tr *ngFor="let product of products.products; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{product.title}}</td>
+            <td>{{product.quantity}}</td>
+            <td>{{product.price}}</td>
+            <td>{{product.tax}}</td>
+            <td>
+              <button type="button" mdbBtn color="primary" class="ml-4 waves-light" data-toggle="modal" (click)="frame.show()"
+                mdbWavesEffect (click)="editProduct(product._id)">Edit</button>
+              <button type="button" mdbBtn color="danger" class="ml-4 waves-light" data-toggle="modal" (click)="frame1.show(); deleteProductId(product._id)"
+                mdbWavesEffect>Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add / Update Product -->
+  <div mdbModal #frame="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <!--Header-->
+        <div class="modal-header text-center">
+          <p class="modal-title w-100 font-weight-bold">{{modelTitle}} </p>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 *ngIf="error" style="color:red"><b> {{msg}} </b></h3>
+        </div>
+
+        <!--Body-->
+        <div class="modal-body mx-3">
+          <input type="hidden" [formControl]="formId">
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="text" id="form34" class="form-control validate" mdbInputDirective [formControl]="formTitle">
+            <label data-error="wrong" data-success="right" for="form34"> Title </label>
+          </div>
+
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="text" id="form34" class="form-control validate" mdbInputDirective [formControl]="formDescription">
+            <label data-error="wrong" data-success="right" for="form34"> Description </label>
+          </div>
+
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="text" id="form34" class="form-control validate" mdbInputDirective [formControl]="formPrice">
+            <label data-error="wrong" data-success="right" for="form34">Price</label>
+          </div>
+
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="text" id="form34" maxlength=3 class="form-control validate" mdbInputDirective [formControl]="formTax">
+            <label data-error="wrong" data-success="right" for="form34">Tax</label>
+          </div>
+
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="text" id="form34" class="form-control validate" mdbInputDirective [formControl]="formQuantity">
+            <label data-error="wrong" data-success="right" for="form34">Quantity</label>
+          </div>
+
+          <div class="modal-footer justify-content-center">
+            <a *ngIf="add" type="button" mdbBtn color="primary" class="waves-light" mdbWavesEffect (click)="addProduct()">
+              Add Product
+              <i class="fa fa-paper-plane ml-1"></i>
+            </a>
+            <a *ngIf="!add" type="button" mdbBtn color="primary" class="waves-light" mdbWavesEffect (click)="updateProduct();">
+              Update Product
+              <i class="fa fa-paper-plane ml-1"></i>
+            </a>
+            <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" data-dismiss="modal"
+              #dismissFrame mdbWavesEffect (click)="frame.hide()">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #frame1="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+      <div class="modal-content text-center">
+        <div class="modal-header d-flex justify-content-center">
+          <p class="heading">Are you sure?</p>
+        </div>
+
+        <div class="modal-body">
+          <i class="fa fa-times fa-4x animated rotateIn"></i>
+        </div>
+
+        <div class="modal-footer flex-center">
+          <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="deleteProduct();frame1.hide()">Yes</a>
+          <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect data-dismiss="modal"
+            #dismissFrame1 (click)="frame1.hide()">Close</button>
+        </div>
+      </div>
+      <!--/.Content-->
+    </div>
+  </div>
+</section>

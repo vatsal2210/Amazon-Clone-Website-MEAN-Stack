@@ -1,69 +1,64 @@
-<nav class="navbar navbar-expand-md bg-main" style="border-bottom:1px solid;">
-  <div class="container-fluid">
-    <a routerLink="/" class="navbar-brand">
-      <img src="../assets/logo.ico" alt="logo" id="logo" style="width:50px;"> Lab5
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark indigo">
+  <mdb-navbar-brand>
+    <a class="navbar-brand" routerLink="/">
+      <img src="../assets/logo.ico" alt="logo" id="logo" height="30"> Lab5
     </a>
-    <button class="navbar-toggler" (click)="isCollapsed = !isCollpased">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  </mdb-navbar-brand>
 
-    <div *ngIf="isManager">
-      <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav" style="cursor:pointer">
-          <li class="nav-item" ngbDropdown #dropdown="ngbDropdown">
-            <a class="nav-link dropdown-toggle" ngbDropdownToggle>
-              <i class="fa fa-user mr-1"></i>
-              <span *ngIf="!token">Accounts</span>
-              <span *ngIf="user.user">{{ user.user.name }}</span>
-            </a>
-            <div ngbDropdownMenu class="dropdown-menu">
-              <a *ngIf="token" (click)="closeDropdown(dropdown);collapse();" routerLink="/profile" class="dropdown-item">
-                <i class="fa fa-user-circle" aria-hidden="true"></i> Profile
-              </a>
-              <a *ngIf="!token" (click)="closeDropdown(dropdown);collapse();" routerLink="/login" class="dropdown-item">
-                <i class="fa fa-key" aria-hidden="true"></i> Login
-              </a>
-              <a *ngIf="token" (click)="closeDropdown(dropdown);collapse();logout();" class="dropdown-item">
-                <i class="fa fa-key" aria-hidden="true"></i> Logout
-              </a>
-              <a *ngIf="!token" (click)="closeDropdown(dropdown);collapse();" routerLink="/register" class="dropdown-item">
-                <i class="fa fa-group" aria-hidden="true"></i> Register
-              </a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a *ngIf="token" (click)="collapse()" routerLink="/cart" routerLinkActive="active" class="nav-link">
-              <i class="fa fa-shopping-cart mr-1"></i> Cart
-              <span class="badge badge-warning ml-1">0</span>
-              <!-- *ngIf="data.cartItems" -->
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <links>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" *ngIf="isManager && token">
+        <a routerLink="/admin/users" class="nav-link">
+          <i class="fa fa-user" aria-hidden="true"></i> Users
+        </a>
+      </li>
+      <li class="nav-item" *ngIf="isManager && token">
+        <a routerLink="/admin/products" class="nav-link">
+          <i class="fa fa-user" aria-hidden="true"></i> Products
+        </a>
+      </li>
+      <li class="nav-item dropdown btn-group" dropdown>
+        <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
+          <i class="fa fa-user mr-1"></i>
+          <span *ngIf="!token">Accounts</span>
+          <span *ngIf="user.user">{{ user.user.name }}</span>
+        </a>
 
-    <div *ngIf="!isManager">
-      <ul class="navbar-nav" style="cursor:pointer">
-        <li class="nav-item">
-          <a routerLink="/admin/users" style="margin-right:30px;">
-            <i class="fa fa-user" aria-hidden="true"></i> Users
+        <div *dropdownMenu class="dropdown-menu dropdown dropdown-primary" role="menu">
+          <a *ngIf="token" class="dropdown-item waves-light" routerLink="/profile">
+            <i class="fa fa-user-circle" aria-hidden="true"></i> Profile
           </a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="/admin/products">
-            <i class="fa fa-key" aria-hidden="true"></i> Products
+          <a *ngIf="!token" class="dropdown-item waves-light" routerLink="/login">
+            <i class="fa fa-key" aria-hidden="true"></i> Login
           </a>
-        </li>
-      </ul>
-    </div>
-
-  </div>
-</nav>
+          <a *ngIf="token" class="dropdown-item waves-light" (click)="logout();">
+            <i class="fa fa-key" aria-hidden="true"></i> Logout
+          </a>
+          <a *ngIf="!token" class="dropdown-item waves-light" routerLink="/register">
+            <i class="fa fa-group" aria-hidden="true"></i> Register
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="!isManager">
+        <a *ngIf="token" (click)="collapse()" routerLink="/cart" routerLinkActive="active" class="nav-link">
+          <i class="fa fa-shopping-cart mr-1"></i> Cart
+          <span class="badge badge-warning ml-1">0</span>
+        </a>
+      </li>
+    </ul>
+  </links>
+</mdb-navbar>
 
 <router-outlet></router-outlet>
 
-<footer id=" main-footer " class="bg-main text-white mt-5 p-5 ">
-  <div class="container ">
-    <p class="lead text-center ">Copyright &copy; 2018 Vatsal Shah</p>
+<!-- Footer -->
+<footer class="page-footer font-small blue">
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3">© 2018 Copyright:
+    <a href="http://vatsalshah.in"> Vatsal Shah</a>
   </div>
+  <!-- Copyright -->
+
 </footer>
+<!-- Footer -->

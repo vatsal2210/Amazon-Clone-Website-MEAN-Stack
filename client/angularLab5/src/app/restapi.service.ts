@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class RestapiService {
+  url = 'http://localhost:8080';
 
   constructor(private http: HttpClient) { }
 
@@ -14,10 +15,12 @@ export class RestapiService {
   }
 
   get(link: string) {
-    return this.http.get(link, { headers: this.getHeaders() }).toPromise();
+    const api = this.url + '' + link;
+    return this.http.get(api, { headers: this.getHeaders() }).toPromise();
   }
 
   post(link: string, body: any) {
-    return this.http.post(link, body, { headers: this.getHeaders() }).toPromise();
+    const api = this.url + '' + link;
+    return this.http.post(api, body, { headers: this.getHeaders() }).toPromise();
   }
 }
