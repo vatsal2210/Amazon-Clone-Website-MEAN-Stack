@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 
@@ -8,25 +8,22 @@ import { UserService } from './user.service';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
-  title = 'Lab5';
-  isCollpased = true;
+export class AppComponent implements OnInit {
 
-  constructor(private router: Router, private user: UserService) {
-    this.user.getProfile();
+  title = 'Lab5';
+  isManager;
+
+  constructor(private router: Router, private user: UserService) { }
+
+  async ngOnInit() {
+    await this.user.getProfile();
+    console.log('app', this.user.isManager);
+    this.isManager = this.user.isManager;
   }
 
   get token() {
     const token = localStorage.getItem('token');
     return token;
-  }
-
-  collapse() {
-    this.isCollpased = true;
-  }
-
-  closeDropdown(dropdown) {
-    dropdown.close();
   }
 
   logout() {

@@ -1,10 +1,8 @@
 <section id="home">
-  <div class="container-fluid d-none d-md-block">
+  <div class="container-fluid">
     <div class="container p-5">
       <app-alert></app-alert>
-      <p class="lead">
-        <b>Recommended Deals:</b>
-      </p>
+      <b>Recommended Deals:</b>
     </div>
 
     <div class="row">
@@ -14,17 +12,50 @@
         </h1>
       </div>
 
-      <div *ngFor="let product of products" class="col-md-3 mb-5">
-        <a routerLink="/product/{{ product._id }}">
+      <div class='col-md-3 mb-5' *ngFor="let product of products">
+        <a data-toggle="modal" data-target="#basicExample" (click)="frame.show()" mdbWavesEffect>
           <div class="card bg-light">
-            <img src="{{ product.image }}" alt="product" class="card-img-top">
+            <img class='product-image' src='' alt='Image' />
             <div class="card-body">
-              <h5 class="card-title">{{ product.title }}</h5>
-              <p class="card-text">{{ product.price | currency }}</p>
+              <h3>
+                <span id='en'>{{product.title}}</span>
+              </h3>
+              <p>Price : <strong> $ {{product.price}}</strong> &nbsp; &nbsp; Tax : <strong> {{product.tax}} </strong>
+              </p>
+              <p> {{product.description}} </p>
+              <div class='btn-group' role=group>
+                <input type='text' name='productQty' id='quantity' value='1' maxlength=3 style='margin-right:10px; text-align:center;width:70px; border: 1px solid #a52a2a; border-radius:10px;'>
+                <button class='add-cart' (click)="addCart()">Add to cart</button><br />
+                <span style='font-stretch: ultra-condensed;font-family: sans-serif;'> Available Quantity: </span>
+                <span id='availableQty'> {{product.quantity}} </span>
+              </div>
             </div>
           </div>
         </a>
       </div>
+
+      <div mdbModal #frame="mdbModal" class="modal fade" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-7">
+                  <h2 class="h2-responsive product-name">
+                    <strong>Product Name</strong>
+                  </h2>
+                  <h4 class="h4-responsive">
+                    <span class="green-text">
+                      <strong>$49</strong>
+                    </span>
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

@@ -52,7 +52,7 @@ export class RegistrationComponent implements OnInit {
     this.btnDisabled = true;
     try {
       if (this.validate()) {
-        const data = await this.rest.post('http://localhost:8080/api/signup', {
+        const data = await this.rest.post('/api/signup', {
           name: this.name,
           email: this.email,
           password: this.password,

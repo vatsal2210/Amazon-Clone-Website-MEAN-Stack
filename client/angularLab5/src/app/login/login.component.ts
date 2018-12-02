@@ -38,23 +38,14 @@ export class LoginComponent implements OnInit {
     this.btnDisabled = true;
     try {
       if (this.validate()) {
-        const data = await this.rest.post(
-          'http://localhost:8080/api/login',
-          {
-            email: this.email,
-            password: this.password
-          }
-        );
+        const data = await this.rest.post('/api/login', {
+          email: this.email,
+          password: this.password
+        });
 
         if (data['success']) {
           localStorage.setItem('token', data['token']);
           await this.user.getProfile();
-          console.log(this.user.user.isManager);
-          if (this.user.user.isManager) {
-            console.log('Manager login');
-            this.router.navigate(['manager']);
-          }
-          this.router.navigate(['/']);
         } else {
           this.alert.error(data['message']);
         }

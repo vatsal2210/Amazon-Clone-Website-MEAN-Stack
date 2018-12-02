@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AlertService } from '../alert.service';
 
 @Component({
@@ -7,10 +7,14 @@ import { AlertService } from '../alert.service';
   styleUrls: ['./alert.component.css']
 })
 export class AlertComponent implements OnInit {
+  @ViewChild('alertRemove') alertRemove: ElementRef;
 
   constructor(private alert: AlertService) { }
 
   ngOnInit() {
   }
 
+  closeAlert() {
+    this.alertRemove.nativeElement.click();
+  }
 }
