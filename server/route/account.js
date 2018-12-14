@@ -88,7 +88,6 @@ module.exports = function (module, appContext) {
                             message: err.message
                         });
                     }
-
                     res.json({
                         success: true,
                         message: 'A verification email has been sent to ' + user.email + '.',
@@ -142,9 +141,105 @@ module.exports = function (module, appContext) {
                         message: 'Wrong password'
                     });
                 } else if (!user.isVerified) {
-                    return res.json({
-                        success: false,
-                        message: 'Your account has not been verified.'
+                    const userId = user._id;
+                    const token = crypto.randomBytes(16).toString('hex');
+                    var jwtToken = jwt.sign({
+                        user: user
+                    }, config.secret, {
+                        expiresIn: '7d'
+                    });
+
+                    Token.findOne({
+                        userId: userId
+                    }, function (err, data) {
+                        if (err) {
+                            console.log('Find User in Token DB error ', err);
+                        } else {
+                            console.log(data);
+                            if (data == null || data == undefined) {
+                                let validationToken = new Token();
+                                validationToken.userId = userId;
+                                validationToken.token = crypto.randomBytes(16).toString('hex');
+                                console.log(validationToken);
+                                validationToken.save();
+
+                                // Send the email
+                                var transporter = nodemailer.createTransport({
+                                    service: 'gmail',
+                                    auth: {
+                                        user: 'mentorpowersoftware@gmail.com',
+                                        pass: 'Mentor@123'
+                                    }
+                                });
+                                var mailOptions = {
+                                    from: 'no-reply@yourwebapplication.com',
+                                    to: user.email,
+                                    subject: 'Account Verification Token',
+                                    text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + validationToken.token + '.\n'
+                                };
+                                transporter.sendMail(mailOptions, function (err) {
+                                    if (err) {
+                                        return res.json({
+                                            success: false,
+                                            message: err.message
+                                        });
+                                    }
+                                    res.json({
+                                        success: true,
+                                        message: 'A verification email has been sent to ' + user.email + '.',
+                                        token: jwtToken
+                                    });
+                                });
+                            } else {
+                                console.log('update token');
+                                //update token and send email.
+                                Token.updateOne({
+                                    userId: userId
+                                }, {
+                                    $set: {
+                                        token: token
+                                    }
+                                }, function (err, res1) {
+                                    if (err) {
+                                        console.log('err found in resend token ', err);
+                                        res.json({
+                                            success: false,
+                                            message: err
+                                        });
+                                    } else {
+                                        console.log('Sending an email');
+                                        // Send the email
+                                        var transporter = nodemailer.createTransport({
+                                            service: 'gmail',
+                                            auth: {
+                                                user: 'mentorpowersoftware@gmail.com',
+                                                pass: 'Mentor@123'
+                                            }
+                                        });
+                                        var mailOptions = {
+                                            from: 'no-reply@yourwebapplication.com',
+                                            to: user.email,
+                                            subject: 'Account Verification Token',
+                                            text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/api\/confirmation\/' + token + '.\n'
+                                        };
+                                        transporter.sendMail(mailOptions, function (err) {
+                                            if (err) {
+                                                return res.json({
+                                                    success: false,
+                                                    message: err.message
+                                                });
+                                            }
+
+                                            res.json({
+                                                success: false,
+                                                message: 'Your account has not been verified. A verification email has been sent to ' + user.email + '.',
+                                                token: jwtToken
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        }
                     });
                 } else if (!user.isActive) {
                     return res.json({

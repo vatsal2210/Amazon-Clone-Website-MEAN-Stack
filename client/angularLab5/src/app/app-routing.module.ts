@@ -9,6 +9,7 @@ import { RegistrationComponent } from './registration/registration.component';
 import { ManagerComponent } from './manager/manager.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ProductsComponent } from './admin/products/products.component';
+import { CollectionComponent } from './collection/collection.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent
+  },
+  {
+    path: 'collection',
+    component: CollectionComponent
   },
   {
     path: 'cart',

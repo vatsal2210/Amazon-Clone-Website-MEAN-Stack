@@ -29,22 +29,22 @@ export class UserService {
           if (this.user.isManager) {
             console.log('Manager login');
             this.isManager = true;
-            this.router.navigate(['/manager']);
+            this.router.navigateByUrl('/manager');
           } else {
             console.log('Normal User');
             this.isManager = false;
-            this.router.navigate(['/']);
+            this.router.navigateByUrl('/');
           }
         }
       } else {
         console.log('Token not found');
-        this.router.navigate(['login']);
+        this.router.navigateByUrl('login');
       }
     } catch (error) {
       console.log('Token not found! ', error);
       this.alert.error(error);
       localStorage.clear();
-      this.router.navigate(['']);
+      this.router.navigateByUrl('/');
     }
   }
 }

@@ -5,9 +5,12 @@
     </button>
     <div *ngIf="isArray">
       <div *ngFor="let data of alert.message">
-        {{ data.msg }}
+        > {{ data.msg }}
+        <br />
       </div>
     </div>
-    {{ alert.message }}
+    <div *ngIf="!isArray">
+      {{ alert.message }}
+    </div>
   </ngb-alert>
 </div>

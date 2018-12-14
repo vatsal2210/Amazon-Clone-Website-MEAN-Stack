@@ -7,7 +7,7 @@ module.exports = function (req, res, next) {
     if (token) {
         jwt.verify(token, config.secret, function (err, decoded) {
             if (err) {
-                console.log('Check JWT Error ', error);
+                console.log('Check JWT Error ', err);
                 res.json({
                     success: false,
                     message: 'Failed to authenticate token'

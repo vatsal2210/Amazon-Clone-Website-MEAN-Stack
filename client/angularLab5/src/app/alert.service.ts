@@ -17,7 +17,8 @@ export class AlertService {
   }
 
   error(message) {
-    if (message.length > 0) {
+    console.log(message);
+    if (message .length > 0) {
       this.isArray = true;
     }
     this.messageType = 'danger';
