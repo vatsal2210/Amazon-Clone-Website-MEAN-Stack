@@ -24,6 +24,7 @@ import { AlertComponent } from './alert/alert.component';
 import { ManagerComponent } from './manager/manager.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ProductsComponent } from './admin/products/products.component';
+import { CollectionComponent } from './collection/collection.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ProductsComponent } from './admin/products/products.component';
     AlertComponent,
     ManagerComponent,
     UsersComponent,
-    ProductsComponent
+    ProductsComponent,
+    CollectionComponent
   ],
   imports: [
     BrowserModule,

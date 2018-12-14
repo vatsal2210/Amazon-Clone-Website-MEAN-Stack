@@ -18,11 +18,15 @@ module.exports = function (appContext) {
     const User = require('../models/users');
     module.User = User;
 
+    const Collection = require('../models/collection');
+    module.Collection = Collection;
+
     /* Other Routing Files */
     const accountRoute = require('./account.js')(module, appContext);
     const userRoute = require("./user.js")(module, appContext);
     const productRoute = require('./products.js')(module, appContext);
     const sellerRoute = require("./seller.js")(module, appContext);
     const adminRoute = require("./admin.js")(module, appContext);
+    const collectionRoute = require("./collection.js")(module, appContext);
 
 };

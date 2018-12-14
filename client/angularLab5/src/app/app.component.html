@@ -17,6 +17,13 @@
           <i class="fa fa-user" aria-hidden="true"></i> Products
         </a>
       </li>
+
+      <li class="nav-item" *ngIf="!isManager && token">
+        <a routerLink="/collection" class="nav-link">
+          <i class="fa fa-star" aria-hidden="true"></i> Collection
+        </a>
+      </li>
+
       <li class="nav-item dropdown btn-group" dropdown>
         <a dropdownToggle type="button" class="nav-link dropdown-toggle waves-light" mdbWavesEffect>
           <i class="fa fa-user mr-1"></i>

@@ -42,8 +42,7 @@ module.exports = function (module, appContext) {
         ], function (err, results) {
             let totalProducts = results[0];
             let products = results[1];
-            console.log('totalProducts ', totalProducts);
-            console.log('products ', products);
+            console.log('totalProducts ', totalProducts);            
             res.json({
                 success: true,
                 products,
