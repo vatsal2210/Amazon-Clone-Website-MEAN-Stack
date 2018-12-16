@@ -6,6 +6,12 @@
   </mdb-navbar-brand>
 
   <links>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link waves-light" mdbWavesEffect>About</a>
+      </li>
+    </ul>
+
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="isManager && token">
         <a routerLink="/admin/users" class="nav-link">

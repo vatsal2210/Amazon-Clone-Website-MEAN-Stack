@@ -3,6 +3,7 @@ module.exports = function (module, appContext) {
     const jwt = appContext.jwt;
     const config = appContext.config;
     const Product = module.Product;
+    const Review = module.Review;
     const User = module.User;
     const Token = module.Token;
     const checkJWT = require("../util/jwtUtil.js");
@@ -12,25 +13,43 @@ module.exports = function (module, appContext) {
     } = require('express-validator/check');
     const nodemailer = require('nodemailer');
     const crypto = require('crypto');
+    const uniqid = require('uniqid');
+
+    var multer = require("multer");
+
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, '../static/img');
+        },
+        filename: function (req, file, cb) {
+            fileId = uniqid();
+            var datetimestamp = Date.now();
+            cb(null, fileId + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+        }
+    });
 
     /* Get All Product */
     app.get('/admin/getProducts', checkJWT, (req, res, next) => {
         console.log('Admin Get Product List');
-        Product.find(function (err, products) {
-            if (err) {
-                console.log('/admin/getProducts', err);
-                res.json({
-                    success: false,
-                    message: err
-                });
-            } else {
-                res.json({
-                    success: true,
-                    message: '',
-                    products,
-                });
-            }
-        });
+        Product.find({})
+            .populate('reviews')
+            .deepPopulate('reviews.owner')
+            .exec((err, products) => {
+                if (err) {
+                    res.json({
+                        success: false,
+                        message: err
+                    });
+                } else {
+                    if (products) {
+                        res.json({
+                            success: true,
+                            message: '',
+                            products
+                        });
+                    }
+                }
+            });
     });
 
     /* Add & Update Product */
@@ -59,23 +78,39 @@ module.exports = function (module, appContext) {
             console.log(errors.array());
             return res.json({
                 success: false,
-                message: errors,
+                message: errors.array(),
             });
         }
+
+        console.log(req.body.id);
+        console.log('file', JSON.stringify(req.body.file));
+
+        var upload = multer({ //multer settings
+            storage: storage
+        }).single('file');
+
+        upload(req, res, function (err) {
+            console.log(req.file);
+            if (err) {
+                console.log('File upload error ', err);
+                return;
+            }
+            console.log('file uploaded ', res);
+        });
 
         let product = new Product();
         product.title = req.body.title;
         product.price = req.body.price;
         product.quantity = req.body.quantity;
         product.description = req.body.description;
-        product.image = "";
+        product.image = uniqid() + ".png";
         product.tax = req.body.tax;
 
-        console.log(req.body.id);
+
         if (req.body.id != null && req.body.id != undefined) {
-            updateProduct();
+            // updateProduct();
         } else {
-            addProduct();
+            // addProduct();
         }
 
         function addProduct() {
@@ -129,7 +164,7 @@ module.exports = function (module, appContext) {
                         price: req.body.price,
                         quantity: req.body.quantity,
                         description: req.body.description,
-                        image: "",
+                        image: req.body.image,
                         tax: req.body.tax,
                     }
                 },
@@ -232,6 +267,7 @@ module.exports = function (module, appContext) {
         });
     });
 
+    /* Change Manager Status */
     app.post('/admin/changeManagerStatus', (req, res, next) => {
         console.log('changeManagerStatus', req.body);
         User.find({
@@ -270,7 +306,44 @@ module.exports = function (module, appContext) {
         });
     });
 
-
-    /* Change Manager Status */
+    /* Change comment Status */
+    app.post('/admin/commentStatus', (req, res, next) => {
+        Review.find({
+            _id: req.body.id
+        }, function (err, data) {
+            if (err) {
+                console.log('err found ', err);
+                res.json({
+                    success: false,
+                    message: err
+                });
+            } else {
+                console.log(req.body.status);
+                const visibilityStatus = req.body.status == 0 ? false : true;
+                console.log(visibilityStatus);
+                Review.updateOne({
+                    _id: req.body.id
+                }, {
+                    $set: {
+                        visibility: visibilityStatus
+                    }
+                }, function (err, res1) {
+                    if (err) {
+                        console.log('err found in update qty ', err);
+                        res.json({
+                            success: false,
+                            message: err
+                        });
+                    } else {
+                        console.log('Comment status changed');
+                        res.json({
+                            success: true,
+                            message: 'Comment status changed'
+                        });
+                    }
+                });
+            }
+        });
+    });
 
 };

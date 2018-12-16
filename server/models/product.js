@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 const ProductSchema = new Schema({
     /* category: {
@@ -44,5 +45,7 @@ const ProductSchema = new Schema({
         virtuals: true
     }
 });
+
+ProductSchema.plugin(deepPopulate);
 
 module.exports = mongoose.model('Product', ProductSchema);
