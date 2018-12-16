@@ -1,33 +1,49 @@
 <section id="home">
+
+  <div *ngIf="!products" class="m-auto">
+    <h1 class="text-center display-3 mt-5">
+      <i class="fa fa-refresh fa-spin"></i>
+    </h1>
+  </div>
+
   <div class="container-fluid">
-    <div class="container" style="padding-bottom: 25px; padding-top: 25px; padding-left: 0px; margin-left: 0px; margin-bottom:25px;">
-      <app-alert></app-alert>
-      <b style="float:left">Recommended Deals:</b>      
-    </div>
-
-    <div class="row">
-      <div *ngIf="!products" class="m-auto">
-        <h1 class="text-center display-3 mt-5">
-          <i class="fa fa-refresh fa-spin"></i>
-        </h1>
+    <app-alert></app-alert>
+    <b>
+      Top Selling Products:
+    </b>
+    <br />
+    <mdb-carousel class="carousel slide carousel-fade" [animation]="'fade'" style="padding-bottom: 15px;">
+      <div *ngFor="let product of products">
+        <mdb-carousel-item>
+          <div class="view w-100">
+            <img src='http://localhost:8080/img/{{product.image}}' alt="{{product.image}}" class="item">
+            <div class="mask rgba-black-light waves-light" mdbWavesEffect></div>
+          </div>
+          <div class="carousel-caption">
+            <h3 class="h3-responsive">{{product.title}}</h3>
+          </div>
+        </mdb-carousel-item>
       </div>
+    </mdb-carousel>
+    <!-- https://mdbootstrap.com/docs/angular/advanced/carousel/#multi-item-carousel -->
 
-      <div class='col-md-3 mb-5' *ngFor="let product of products">
-        <a data-toggle="modal" data-target="#basicExample" (click)="productDetails(product.id);frame.show()"
-          mdbWavesEffect>
+    <b style="float:left">Recommended Deals:</b><br />
+    <hr />
+    <div class="row" style="overflow:auto;">
+
+      <div class="col-md-3 mb-5" *ngFor="let product of products">
+        <a data-toggle="modal" data-target="#basicExample" (click)="productDetails(product.id);frame.show()">
           <div class="card bg-light">
-            <img class='product-image' src='' alt='Image' />
+            <img class='product-image' src='http://localhost:8080/img/{{product.image}}' alt='Image' />
             <div class="card-body">
-              <h3>
-                <span id='en'>{{product.title}}</span>
-              </h3>
+              <h5 class="card-title">{{ product.title }}</h5>
             </div>
           </div>
         </a>
       </div>
 
       <div mdbModal #frame="mdbModal" class="modal fade" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
+        aria-hidden="true" style="overflow:auto;">
         <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
             <div class="modal-body">
@@ -38,29 +54,76 @@
                       <i class="fa fa-refresh fa-spin"></i>
                     </h1>
                   </div>
-                  <h2 class="h2-responsive product-name">
-                    <strong *ngIf="productData">{{productData.title}}</strong>
-                  </h2>
-                  <h4 class="h4-responsive">
-                    <span class="green-text">
-                      <strong *ngIf="productData">{{productData.description}}</strong>
-                    </span>
-                  </h4>
-                  <h4 class="h4-responsive">
-                    <span class="green-text">
-                      Price: <strong *ngIf="productData">{{productData.price}}</strong>
-                    </span><br />
-                    <span class="green-text">
-                      Review: <strong *ngIf="productData">{{productData.reviews}}</strong>
-                    </span><br />
-                  </h4>
+                  <div class="col-6">
+                    <h2 class="h2-responsive product-name">
+                      <strong *ngIf="productData">{{productData.title}}</strong>
+                    </h2>
+                    <h4 class="h4-responsive">
+                      <span class="green-text">
+                        <strong *ngIf="productData">{{productData.description}}</strong>
+                      </span>
+                    </h4>
+                    <h4 class="h4-responsive">
+                      <span class="green-text">
+                        Price: <strong *ngIf="productData">{{productData.price}}</strong>
+                      </span><br />
+                    </h4>
+                  </div>
+
+                  <div>
+                    <div class="mt-5 ml-lg-5">
+                      <h4>Reviews</h4>
+                      <hr />
+                      <div class="reviews" *ngIf="productData && productData.reviews">
+                        <div *ngFor="let review of productData.reviews" class="review">
+                          <div class="p-3">
+                            <img [src]="review.owner.picture" alt="poster" width="75px" class="rounded-circle">
+                            <p class="lead d-inline ml-3">{{ review.owner.name }}</p>
+                            <br />
+                            <br />
+                            <ngb-rating [(rate)]="review.rating" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating>
+                            <!-- <p class="ml-2 d-inilen font-weight-bold">{{ review.title }}</p> -->
+                            <p class="mt-3">{{ review.description }}</p> {{review.create | date:'medium'}}
+                          </div>
+                          <hr />
+                        </div>
+                      </div>
+                      <div class="card bg-light my-5">
+                        <div class="card-body">
+                          <h4 class="card-title">Add a Review</h4>
+                          <hr>
+                          <div class="form">
+                            <div class="form-group">
+                              <label>Comment</label>
+                              <textarea name="description" class="form-control" [(ngModel)]="myReview.description"></textarea>
+                            </div>
+                            <label>Rating</label>
+                            <ngb-rating [(rate)]="myReview.rating" [starTemplate]="t" [readonly]="false" max="5"></ngb-rating>
+                            <br />
+                            <br />
+                            <button type="button" class="btn btn-info" (click)="postReview()" [disabled]="btnDisabled">Post
+                              Review</button>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
+
+
+<ng-template #t let-fill="fill">
+  <span *ngIf="fill === 100" class="star full">&#9733;</span>
+  <span *ngIf="fill === 0" class="star">&#9733;</span>
+  <span *ngIf="fill < 100 && fill > 0" class="star">
+    <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+  </span>
+</ng-template>

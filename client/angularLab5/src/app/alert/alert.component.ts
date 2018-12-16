@@ -7,7 +7,6 @@ import { AlertService } from '../alert.service';
   styleUrls: ['./alert.component.css']
 })
 export class AlertComponent implements OnInit {
-  @ViewChild('alertRemove') alertRemove: ElementRef;
 
   constructor(private alert: AlertService) { }
 
@@ -15,6 +14,6 @@ export class AlertComponent implements OnInit {
   }
 
   closeAlert() {
-    this.alertRemove.nativeElement.click();
+    console.log('called');
   }
 }

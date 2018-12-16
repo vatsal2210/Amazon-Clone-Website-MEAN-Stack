@@ -4,6 +4,7 @@ module.exports = function (module, appContext) {
     const jwt = appContext.jwt;
     const config = appContext.config;
     const Product = module.Product;
+    const Review = module.Review;
     const Token = module.Token;
     const checkJWT = require("../util/jwtUtil.js");
     const {
@@ -33,7 +34,7 @@ module.exports = function (module, appContext) {
                 Product.find({})
                     .skip(perPage * page)
                     .limit(perPage)
-                    // .populate('owner')
+                    .populate('review')
                     .exec((err, products) => {
                         if (err) return next(err);
                         callback(err, products);
@@ -42,7 +43,7 @@ module.exports = function (module, appContext) {
         ], function (err, results) {
             let totalProducts = results[0];
             let products = results[1];
-            console.log('totalProducts ', totalProducts);            
+            console.log('totalProducts ', totalProducts);
             res.json({
                 success: true,
                 products,
@@ -55,19 +56,71 @@ module.exports = function (module, appContext) {
     /* Find Product Details */
     app.get('/api/findProduct/:id', function (req, res) {
         console.log('Find Product Details ', req.params.id);
+        const commentLimit = 2;
         Product.find({
                 _id: req.params.id
-            },
-            function (err, product) {
+            })
+            .populate({
+                path: 'reviews',
+                match: {
+                    visibility: true
+                },
+                options: {
+                    limit: 5,
+                    sort: {
+                        create: -1
+                    }
+                }
+            })
+            .deepPopulate('reviews.owner')
+            .exec((err, product) => {
                 if (err) {
-                    console.log('err found ', err);
-                } else {
-                    console.log('Found details of a product ', product);
-                    res.send({
-                        success: true,
-                        product
+                    res.json({
+                        success: false,
+                        message: 'Product is not found'
                     });
+                } else {
+                    if (product) {
+                        res.json({
+                            success: true,
+                            product
+                        });
+                    }
                 }
             });
+    });
+
+    /* Review and Comment */
+    app.post('/api/review', checkJWT, (req, res, next) => {
+        console.log('Review submit');
+
+        /* Confirm before save */
+
+        async.waterfall([
+            function (callback) {
+                Product.findOne({
+                    _id: req.body.productId
+                }, (err, product) => {
+                    if (product) {
+                        callback(err, product);
+                    }
+                });
+            },
+            function (product) {
+                let review = new Review();
+                review.owner = req.decoded.user._id;
+
+                if (req.body.description) review.description = req.body.description;
+                review.rating = req.body.rating;
+
+                product.reviews.push(review._id);
+                product.save();
+                review.save();
+                res.json({
+                    success: true,
+                    message: "Successfully added the review"
+                });
+            }
+        ]);
     });
 };

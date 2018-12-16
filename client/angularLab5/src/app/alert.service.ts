@@ -17,8 +17,7 @@ export class AlertService {
   }
 
   error(message) {
-    console.log(message);
-    if (message .length > 0) {
+    if (message instanceof Array) {
       this.isArray = true;
     }
     this.messageType = 'danger';
@@ -26,7 +25,7 @@ export class AlertService {
   }
 
   success(message) {
-    if (message.length > 0) {
+    if (message instanceof Array) {
       this.isArray = true;
     }
     this.messageType = 'success';
@@ -34,7 +33,7 @@ export class AlertService {
   }
 
   warning(message) {
-    if (message.length > 0) {
+    if (message instanceof Array) {
       this.isArray = true;
     }
     this.messageType = 'warning';

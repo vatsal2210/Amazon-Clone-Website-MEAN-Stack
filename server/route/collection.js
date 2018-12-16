@@ -14,8 +14,8 @@ module.exports = function (module, appContext) {
     const crypto = require('crypto');
     const async = appContext.async;
 
-    /* Get Product List */
-    app.get('/api/findColleciton', checkJWT, (req, res, next) => {
+    /* Get Collections List */
+    app.get('/api/collections', checkJWT, (req, res, next) => {
         console.log('Find all collection details');
 
         Collection.find({
@@ -34,15 +34,25 @@ module.exports = function (module, appContext) {
             });
     });
 
+    /* Add Product in collection */
     app.post('/api/addCollection', checkJWT, [
-            check('name').isLength({
+            check('title').isLength({
                 min: 3
             })
             .withMessage('Must be 3 chars long'),
         ],
         function (req, res, next) {
-            console.log('add collection');
-            const collections = req.body.collection;
+            console.log('add collection ');
+            const title = req.body.title;
+            const description = req.body.description;
+            const productId = req.body.productId;
+            const visibility = req.body.visibility;
+            const userId = req.decoded.user._id;
+
+            console.log(title);
+            console.log(description);
+            console.log(productId);
+            console.log(userId);
 
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -54,7 +64,7 @@ module.exports = function (module, appContext) {
             }
 
             Collection.findOne({
-                name: collections.title
+                name: title
             }, function (err, data) {
                 if (err) {
                     console.log('find item name found error ', err);
@@ -70,19 +80,20 @@ module.exports = function (module, appContext) {
                             message: 'Something went wrong. Try Again!',
                         });
                     } else {
-                        console.log(collections);
                         let collection = new Collection();
-                        collection.title = collections.name;
-                        collection.description = collections.description;
-                        collection.userId = collections.userId;
-                        data.map(data => {
-                            Collection.collections.push({
-                                product: data.product,
-                                quantity: data.quantity
+                        collection.name = title;
+                        collection.description = description;
+                        collection.userId = userId;
+                        collection.visibility = visibility;
+                        //collection.products.product = productId;
+                        productId.map(data => {
+                            console.log(data);
+                            collection.products.push({
+                                product: data
                             });
                         });
 
-                        Collection.save(function (err, item) { // Create User
+                        collection.save(function (err, item) { // Create User
                             if (err) {
                                 console.log(err);
                                 res.send({
@@ -99,6 +110,107 @@ module.exports = function (module, appContext) {
                     }
                 }
             });
-
         });
+
+    /* Find collection Product Details */
+    app.get('/api/collectionDetails/:id', checkJWT, (req, res, next) => {
+        console.log('Find Product Details ', req.params.id);
+        Collection.find({
+                _id: req.params.id
+            },
+            function (err, products) {
+                if (err) {
+                    console.log('err found ', err);
+                } else {
+                    console.log('Found details of a products ', products);
+                    res.send({
+                        success: true,
+                        products
+                    });
+                }
+            });
+    });
+
+    /* Update Collection */
+    app.post('/api/updateCollection', checkJWT, [
+            check('title').isLength({
+                min: 3
+            })
+            .withMessage('Must be 3 chars long'),
+        ],
+        function (req, res, next) {
+            console.log('update collection ');
+            const id = req.body.id;
+            const title = req.body.title;
+            const description = req.body.description;
+            const productId = req.body.productId;
+            const visibility = req.body.visibility;
+            const userId = req.decoded.user._id;
+
+            console.log(title);
+            console.log(description);
+            console.log(productId);
+            console.log(userId);
+
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                console.log(errors.array());
+                return res.json({
+                    success: false,
+                    message: errors,
+                });
+            }
+
+            // Compare name of update collection
+            Collection.updateOne({
+                    _id: id
+                }, {
+                    $set: {
+                        name: title,
+                        description: description,
+                        visibility: visibility,
+                        // productId.map(data => {
+                        //     console.log(data);
+                        //     collection.products.push({
+                        //         product: data
+                        //     });
+                        // });
+                    }
+                },
+                function (err, product) {
+                    if (err) {
+                        console.log('err found in update collection ', err);
+                        res.send({
+                            success: false,
+                            message: 'Something went wrong!. ' + err,
+                        });
+                    } else {
+                        res.send({
+                            success: true,
+                            message: 'Collection Details Updated'
+                        });
+                    }
+                });
+        });
+
+    /* Delete Collection */
+    app.post('/api/deleteCollection', checkJWT, function (req, res) {
+        console.log('Delete Item', req.body.id);
+        Collection.findOneAndDelete({
+            _id: req.body.id
+        }, function (err, data) {
+            if (err) {
+                console.log(err);
+                res.send({
+                    success: false,
+                    message: 'Something went wrong. Try Again! ' + err,
+                });
+            }
+            console.log('delete item ', data);
+            res.send({
+                success: true,
+                message: 'Deleted successfully.'
+            });
+        });
+    });
 };

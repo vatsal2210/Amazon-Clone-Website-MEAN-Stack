@@ -31,6 +31,9 @@ export class ProductsComponent implements OnInit {
   modelTitle;
   deleteProductid;
   add = true;
+  fileData;
+  productReview;
+  productReviewId;
 
   formTitle = new FormControl('', Validators.required);
   formDescription = new FormControl('', Validators.required);
@@ -73,9 +76,17 @@ export class ProductsComponent implements OnInit {
     this.sorted = !this.sorted;
   }
 
+  /* File Upload */
+  handleFileInput(files) {
+    console.log(files);
+    // this.fileData = files;
+    this.fileData = new FormData();
+    this.fileData.append('file', files);
+  }
+
   /* Form Submit */
   async addProduct() {
-    console.log('Add Product Request');
+    this.add = true;
     const data = await this.rest.post('/admin/product', {
       id: this.formId.value,
       title: this.formTitle.value,
@@ -83,6 +94,7 @@ export class ProductsComponent implements OnInit {
       price: this.formPrice.value,
       quantity: this.formQuantity.value,
       tax: this.formTax.value,
+      file: this.fileData
     });
 
     if (data['success']) {
@@ -96,7 +108,6 @@ export class ProductsComponent implements OnInit {
 
   /* Edit Item */
   async editProduct(id) {
-    console.log('Find product ', id);
     const data = await this.rest.get('/api/findProduct/' + id);
     if (data['success']) {
       this.findproduct = data['product'];
@@ -140,9 +151,8 @@ export class ProductsComponent implements OnInit {
   }
 
   async deleteProduct() {
-    console.log(this.deleteProductid);
     const data = await this.rest.post('/admin/deleteProduct', {
-      'id': this.deleteProductid
+      id: this.deleteProductid
     });
     if (data['success']) {
       this.alert.success(data['message']);
@@ -150,6 +160,29 @@ export class ProductsComponent implements OnInit {
       this.dismissFrame1.nativeElement.click();
     }
     this.alert.error(data['message']);
+  }
+
+  async getProductReview(id) {
+    this.productReviewId = id;
+    const data = this.products.products;
+    const findProductReview = data.find(x => x._id === id);
+    this.productReview = findProductReview.reviews.length > 0 ? findProductReview : '';
+  }
+
+  /* Change comment status */
+  async changeCommentStatus(id, status) {
+    const data = await this.rest.post('/admin/commentStatus', {
+      id: id,
+      status: status
+    });
+    if (data['success']) {
+      this.alert.success(data['message']);
+      this.products = await this.rest.get('/admin/getProducts');
+      const details = this.products.products;
+      this.productReview = details.find(x => x._id === this.productReviewId);
+    } else {
+      this.alert.error(data['message']);
+    }
   }
 
 }

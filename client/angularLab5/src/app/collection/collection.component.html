@@ -1,3 +1,131 @@
-<p>
-  collection works!
-</p>
+<section id="collectionPage" style="padding:20px;">
+  <app-alert></app-alert>
+  <div class="">
+
+    <h2 class="cart-header" style="margin-left:15px;"> Collections
+      <!-- Add Button for collection -->
+      <button type="button" mdbBtn color="default" rounded="true" data-toggle="modal" (click)="frame.show(); showProducts(); clearForm();"
+        mdbWavesEffect>Add Collection</button>
+    </h2>
+    <hr />
+
+    <div class="container-fluid">
+      <div class="row">
+        <div *ngIf="!collections" class="m-auto">
+          <h1 class="text-center display-3 mt-5">
+            <i class="fa fa-refresh fa-spin"></i>
+          </h1>
+        </div>
+
+        <!-- <div *ngIf="collectionArray"> -->
+        <div class='col-md-3 mb-5' *ngFor="let collection of collections">
+          <div class="card">
+            <div class="card-body">
+              <h3>
+                <span id='en'>{{collection.name}}</span>
+                <br />
+                <span id='en'>{{collection.description}}</span>
+              </h3>
+              <br />
+              <button type="button" mdbBtn color="primary" class="ml-4 waves-light" data-toggle="modal" (click)="frame.show();editCollection(collection._id);"
+                mdbWavesEffect>Edit</button>
+              <button type="button" mdbBtn color="danger" class="ml-4 waves-light" data-toggle="modal" (click)="frame1.show(); deleteCollectionid(collection._id)"
+                mdbWavesEffect>Delete</button>
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+
+        <div *ngIf="!collectionArray">
+          <h3> Add collection </h3>
+        </div>
+      </div>
+
+      <!-- Model -->
+      <div mdbModal #frame="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header text-center">
+              <p class="modal-title w-100 font-weight-bold"> {{modelTitle}} </p>
+
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="frame.hide()"
+                #dismissFrame>
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h3 *ngIf="error" style="color:red"><b> {{msg}} </b></h3>
+            </div>
+
+            <!--Body-->
+            <div class="modal-body mx-3">
+              <table class="table table-bordered">
+                <!-- Table head -->
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="hidden" [formControl]="formId">
+                      <input type="text" value="" [formControl]="collectionName">
+                      <input type="text" value="" [formControl]="collectionDescription">
+                      <label class="bs-switch"> Visibility
+                        <input type="checkbox" [formControl]="collectionVisibility">
+                        <span class="slider round"></span>
+                      </label>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of products">
+                    <th scope="row">
+                      <!-- Default unchecked -->
+                      <div class="custom-control custom-checkbox">
+                        <!-- <mdb-checkbox default="true" [formControl]="productId" value="product.id">{{product.title}}</mdb-checkbox> -->
+                        <input type="checkbox" name="{{product.id}}" (change)="onCheckboxChange(product,$event)">{{product.title}}
+                      </div>
+                    </th>
+                  </tr>
+                </tbody>
+                <a *ngIf="add" type="button" mdbBtn color="primary" class="waves-light" mdbWavesEffect (click)="addCollection()">
+                  Add Product
+                  <i class="fa fa-paper-plane ml-1"></i>
+                </a>
+                <a *ngIf="!add" type="button" mdbBtn color="primary" class="waves-light" mdbWavesEffect (click)="updateCollection();">
+                  Update Product
+                  <i class="fa fa-paper-plane ml-1"></i>
+                </a>
+                <a type="button" mdbBtn color="primary" outline="true" class="waves-effect" data-dismiss="modal"
+                  #dismissFrame mdbWavesEffect (click)="frame.hide()">Cancel</a>
+
+                <!-- Table body -->
+              </table>
+              <!-- Table  -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div mdbModal #frame1="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+          <div class="modal-content text-center">
+            <div class="modal-header d-flex justify-content-center">
+              <p class="heading">Are you sure?</p>
+            </div>
+
+            <div class="modal-body">
+              <i class="fa fa-times fa-4x animated rotateIn"></i>
+            </div>
+
+            <div class="modal-footer flex-center">
+              <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="deleteCollection();frame1.hide()">Yes</a>
+              <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect
+                data-dismiss="modal" #dismissFrame1 (click)="frame1.hide()">Close</button>
+            </div>
+          </div>
+          <!--/.Content-->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -6,8 +6,8 @@ import { AppComponent } from './app.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { ModalModule, WavesModule, InputsModule, ButtonsModule } from 'angular-bootstrap-md';
-import { CarouselModule } from 'angular-bootstrap-md';
+import { ModalModule, WavesModule, InputsModule } from 'angular-bootstrap-md';
+import { CarouselModule, CardsFreeModule, ButtonsModule } from 'angular-bootstrap-md';
 import { FormsModule, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -48,7 +48,7 @@ import { CollectionComponent } from './collection/collection.component';
     ReactiveFormsModule,
     HttpClientModule,
     MDBBootstrapModule.forRoot(),
-    CarouselModule, ModalModule, WavesModule, InputsModule, ButtonsModule
+    CarouselModule, ModalModule, WavesModule, InputsModule, ButtonsModule, CardsFreeModule
   ],
   providers: [AlertService, UserService, RestapiService],
   bootstrap: [AppComponent]

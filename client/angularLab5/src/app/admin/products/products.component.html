@@ -38,8 +38,10 @@
             <td>{{product.price}}</td>
             <td>{{product.tax}}</td>
             <td>
-              <button type="button" mdbBtn color="primary" class="ml-4 waves-light" data-toggle="modal" (click)="frame.show()"
-                mdbWavesEffect (click)="editProduct(product._id)">Edit</button>
+              <button type="button" mdbBtn color="primary" class="ml-4 waves-light" data-toggle="modal" (click)="frame2.show(); getProductReview(product._id);"
+                mdbWavesEffect>Comments</button>
+              <button type="button" mdbBtn color="primary" class="ml-4 waves-light" data-toggle="modal" (click)="frame.show();editProduct(product._id)"
+                mdbWavesEffect>Edit</button>
               <button type="button" mdbBtn color="danger" class="ml-4 waves-light" data-toggle="modal" (click)="frame1.show(); deleteProductId(product._id)"
                 mdbWavesEffect>Delete</button>
             </td>
@@ -71,6 +73,12 @@
             <i class="fa fa-user prefix grey-text"></i>
             <input type="text" id="form34" class="form-control validate" mdbInputDirective [formControl]="formTitle">
             <label data-error="wrong" data-success="right" for="form34"> Title </label>
+          </div>
+
+          <div class="md-form mb-5">
+            <i class="fa fa-user prefix grey-text"></i>
+            <input type="file" id="form34" class="form-control validate" mdbInputDirective (change)="handleFileInput($event.target.files)">
+            <label data-error="wrong" data-success="right" for="form34"></label>
           </div>
 
           <div class="md-form mb-5">
@@ -135,4 +143,55 @@
       <!--/.Content-->
     </div>
   </div>
+
+  <div mdbModal #frame2="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel2" aria-hidden="true" style="overflow:auto;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-center">
+          <p class="heading">Comments</p>
+        </div>
+
+        <div class="mt-5 ml-lg-5">
+          <div class="reviews" *ngIf="!productReview">
+            <p> No Comment Found</p>
+          </div>
+          <div class=" reviews" *ngIf="productReview && productReview.reviews">
+            <div *ngFor="let review of productReview.reviews" class="review">
+              <div class="p-3">
+                <img [src]="review.owner.picture" alt="poster" width="75px" class="rounded-circle">
+                <p class="lead d-inline ml-3">{{ review.owner.name }}</p>
+                <ngb-rating [(rate)]="review.rating" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating>
+                <p class="mt-3">{{ review.description }}</p> {{review.create | date:'medium'}}
+                <br />
+                <p lass="mt-3">Visibility</p>
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" name="commentIDRadio{{review._id}}" id="commentID{{review._id}}"
+                    checked mdbInputDirective [checked]="review.visibility == true" (click)="changeCommentStatus(review._id, 1);">
+                  <label class="custom-control-label" for="commentID{{review._id}}">Yes</label>
+                </div>
+
+                <!-- Default checked -->
+                <div class="custom-control custom-radio custom-control-inline">
+                  <input type="radio" class="custom-control-input" name="commentIDRadio1{{review._id}}" id="commentID1{{review._id}}"
+                    mdbInputDirective [checked]="review.visibility == false" (click)="changeCommentStatus(review._id, 0);">
+                  <label class=" custom-control-label" for="commentID1{{review._id}}">No</label>
+                </div>
+              </div>
+              <hr />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
+
+<ng-template #t let-fill="fill">
+  <span *ngIf="fill === 100" class="star full">&#9733;</span>
+  <span *ngIf="fill === 0" class="star">&#9733;</span>
+  <span *ngIf="fill < 100 && fill > 0" class="star">
+    <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+  </span>
+</ng-template>

@@ -6,11 +6,14 @@ const ReviewSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
-    title: String,
     description: String,
     rating: {
         type: Number,
         default: 0
+    },
+    visibility: {
+        type: Boolean,
+        default: true,
     },
     create: {
         type: Date,
