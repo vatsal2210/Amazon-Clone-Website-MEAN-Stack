@@ -4,6 +4,7 @@ import { RestapiService } from '../restapi.service';
 import { AlertService } from '../alert.service';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-home',
@@ -21,11 +22,11 @@ export class HomeComponent implements OnInit {
     description: '',
     rating: 0
   };
-
+  cartCount = 0;
   btnDisabled = false;
   cartbtnDisabled = false;
 
-  constructor(private rest: RestapiService, private alert: AlertService, private user: UserService, private router: Router) { }
+  constructor(private rest: RestapiService, private alert: AlertService, private user: UserService, private app: AppComponent) { }
   @ViewChild('dismissFrame1') dismissFrame1: ElementRef;
 
   async ngOnInit() {
@@ -96,6 +97,8 @@ export class HomeComponent implements OnInit {
 
       if (data['success']) {
         this.alert.success(data['message']);
+        this.cartCount = data['cartCount'];
+        this.app.cartItems = this.cartCount;
       } else {
         this.alert.error(data['message']);
       }

@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RestapiService } from '../restapi.service';
 import { AlertService } from '../alert.service';
 import { FormControl, Validators } from '@angular/forms';
+import { UserService } from '../user.service';
+import { AppComponent } from '../app.component';
+
 
 @Component({
   selector: 'app-cart',
@@ -11,33 +14,32 @@ import { FormControl, Validators } from '@angular/forms';
 export class CartComponent implements OnInit {
   quantities = [];
   cartItems = [];
+  receipt;
+  cartCount;
   btnDisabled = false;
+  totalPrice;
+  total = 0;
+  data: any;
   productQty = new FormControl({ value: '', disabled: true }, Validators.required);
 
-  constructor(private rest: RestapiService, private alert: AlertService) { }
+  constructor(private rest: RestapiService, private alert: AlertService, private user: UserService, private app: AppComponent) { }
 
   async ngOnInit() {
-    const data = await this.rest.get('/api/cart');
-    this.cartItems = data['cartItem'];
-    console.log(this.cartItems);
+    this.cartRecord();
   }
 
   /* Update Qty */
   async updateQty(id, action) {
-    console.log('update for ', id);
-    console.log(this.productQty.value);
 
     try {
       const data = await this.rest.post('/api/addtocart', {
         productId: id,
-        quantity: this.productQty.value,
         action: action
       });
 
       if (data['success']) {
         this.alert.success(data['message']);
-        const details = await this.rest.get('/api/cart');
-        this.cartItems = details['cartItem'];
+        this.cartRecord();
       } else {
         this.alert.error(data['message']);
       }
@@ -55,8 +57,7 @@ export class CartComponent implements OnInit {
 
       if (data['success']) {
         this.alert.success(data['message']);
-        const details = await this.rest.get('/api/cart');
-        this.cartItems = details['cartItem'];
+        this.cartRecord();
       } else {
         this.alert.error(data['message']);
       }
@@ -67,6 +68,48 @@ export class CartComponent implements OnInit {
 
   /* Check out */
   async checkout() {
+    console.log('Check out items');
+    const data = await this.rest.post('/api/orderCart', {});
 
+    if (data['success']) {
+      console.log(this.cartItems);
+      this.receipt = this.cartItems;
+      this.alert.success(data['message']);
+    } else {
+      this.alert.error(data['message']);
+    }
+  }
+
+  /* Clear cart */
+  async clearCart() {
+    console.log('clear cart');
+    const data = await this.rest.post('/api/clearCart', {});
+
+    if (data['success']) {
+      this.alert.success(data['message']);
+      this.cartRecord();
+    } else {
+      this.alert.error(data['message']);
+    }
+  }
+
+  async refreshPage() {
+    console.log();
+    this.cartRecord();
+  }
+
+  async cartRecord() {
+    const data = await this.rest.get('/api/cart');
+    this.cartItems = data['cartItem'];
+    this.cartCount = data['cartCount'];
+    this.app.cartItems = this.cartCount;
+    console.log(this.cartItems);
+    if (this.cartItems) {
+      this.total = 0;
+      this.totalPrice = this.cartItems.forEach((d => {
+        this.total += d.totalPrice;
+      }));
+      this.totalPrice = this.total;
+    }
   }
 }

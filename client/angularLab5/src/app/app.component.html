@@ -57,8 +57,7 @@
       <li class="nav-item" *ngIf="!isManager">
         <a *ngIf="token" routerLink="/cart" routerLinkActive="active" class="nav-link">
           <i class="fa fa-shopping-cart mr-1"></i> Cart
-          <!-- <span class="badge badge-warning ml-1">0</span> -->
-          <span *ngIf="cart.cartItems" class="badge badge-warning ml-1">{{ cart.cartItems }}</span>
+          <span class="badge badge-warning ml-1">{{ cartItems }}</span>
         </a>
       </li>
     </ul>

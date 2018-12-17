@@ -373,4 +373,34 @@ module.exports = function (module, appContext) {
         });
         */
     });
+
+
+    /* Update user profile */
+    app.post('/api/updateprofile', (req, res, next) => {
+        console.log(req.body.name, req.body.id);
+
+        User.findOneAndUpdate({
+                _id: req.body.id
+            }, {
+                $set: {
+                    name: req.body.name
+                }
+            },
+            function (err, update) {
+                if (err) {
+                    console.log('err found in update name ', err);
+                    res.send({
+                        success: false,
+                        message: 'Something went wrong!. ' + err,
+                    });
+                } else {
+                    console.log('name updated');
+                    res.send({
+                        success: true,
+                        message: 'Name is updated.'
+                    });
+                }
+            });
+    });
+
 };

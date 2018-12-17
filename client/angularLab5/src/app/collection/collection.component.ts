@@ -59,7 +59,6 @@ export class CollectionComponent implements OnInit {
   async showProducts() {
     this.resetForm();
     this.add = true;
-    console.log('Call show product div ');
     const data = await this.rest.get('/api/products');
     this.products = data['products'];
     console.log('Found all products ', this.products);
@@ -69,7 +68,6 @@ export class CollectionComponent implements OnInit {
   async onCheckboxChange(product, event) {
     if (!this.add) {
       const status = event.target.checked ? 1 : 0;
-      console.log('call api ', product.id, event.target.checked);
       const data = await this.rest.post('/api/updateCollectionProduct', {
         id: this.formId.value,
         productId: product.id,

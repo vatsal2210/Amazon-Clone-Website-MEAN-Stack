@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RestapiService } from './restapi.service';
 import { AlertService } from './alert.service';
-
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -10,6 +9,7 @@ import { Router } from '@angular/router';
 export class UserService {
   user: any;
   isManager;
+  cartItems = 0;
 
   constructor(private rest: RestapiService, private alert: AlertService, private router: Router) { }
 
@@ -24,7 +24,8 @@ export class UserService {
           console.log('User details not found ', this.user);
         } else {
           this.user = data['user'];
-          console.log('User Details found ', this.user);
+          this.cartItems = data['cartCount'];
+          console.log('User Details found ', this.user, this.cartItems);
 
           if (this.user.isManager) {
             console.log('Manager login');
@@ -47,4 +48,16 @@ export class UserService {
       this.router.navigateByUrl('/');
     }
   }
+
+  // addedToCard() {
+  //   console.log('added product ');
+  //   // this.cartItems = this.cartItems++;
+  //   this.app.cartItems = this.cartItems++;
+  // }
+
+  // removedFromCart() {
+  //   console.log('removed product ');
+  //   // this.cartItems = this.cartItems--;
+  //   this.app.cartItems = this.cartItems++;
+  // }
 }

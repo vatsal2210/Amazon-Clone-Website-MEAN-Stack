@@ -18,27 +18,37 @@ module.exports = function (module, appContext) {
 
     /* User Dashboard */
     app.get('/api/profile', checkJWT, (req, res, next) => {
-        User.findOne({
-            _id: req.decoded.user._id
-        }, (err, user) => {
-            if (err) {
-                console.log('User details not found');
-                res.json({
-                    success: false,
-                    message: 'Something went wrong. Try again!'
+        async.parallel([
+            function (callback) {
+                Cart.count({
+                    owner: req.decoded.user._id
+                }, (err, count) => {
+                    let cartCount = count;
+                    callback(err, cartCount);
                 });
+            },
+            function (callback) {
+                User.findOne({
+                        _id: req.decoded.user._id
+                    })
+                    .exec((err, users) => {
+                        if (err) return next(err);
+                        callback(err, users);
+                    });
             }
-            console.log('In API profile user details found ', user);
+        ], function (err, results) {
+            let cartCount = results[0];
+            let user = results[1];
             res.json({
                 success: true,
                 user,
-                message: "successful"
+                cartCount
             });
         });
     });
 
     /* Store Manager Dashboard */
-    app.get('/admin', (req, res, next) => {
+    app.get('/admin', checkJWT, (req, res, next) => {
         console.log('admin request found');
         User.find((err, result) => {
             console.log('User details found ', result);
@@ -59,7 +69,36 @@ module.exports = function (module, appContext) {
     /* View Cart */
     app.get('/api/cart', checkJWT, (req, res, next) => {
         console.log('cart product request found');
-        Cart.find({
+        async.parallel([
+            function (callback) {
+                Cart.count({
+                    owner: req.decoded.user._id
+                }, (err, count) => {
+                    let cartCount = count;
+                    callback(err, cartCount);
+                });
+            },
+            function (callback) {
+                Cart.find({
+                        owner: req.decoded.user._id
+                    })
+                    .populate('products.product')
+                    .exec((err, cartItem) => {
+                        if (err) return next(err);
+                        callback(err, cartItem);
+                    });
+            },
+        ], function (err, results) {
+            let cartCount = results[0];
+            let cartItem = results[1];
+            res.json({
+                success: true,
+                cartCount,
+                cartItem,
+            });
+        });
+
+        /* Cart.find({
                 owner: req.decoded.user._id
             })
             .populate('products.product')
@@ -78,11 +117,11 @@ module.exports = function (module, appContext) {
                         });
                     }
                 }
-            });
+            }); */
     });
 
     /* View Order */
-    app.get('/api/order', (req, res, next) => {
+    app.get('/api/order', checkJWT, (req, res, next) => {
         console.log('order product request found');
         Order.find({
             owner: req.decoded.user._id
@@ -108,12 +147,9 @@ module.exports = function (module, appContext) {
         console.log('post request add to cart ');
         const userId = req.decoded.user._id;
         const productId = req.body.productId;
-        // var quantity = req.body.quantity;
         const action = req.body.action;
         var productQty;
 
-        console.log('req for ', productId);
-        console.log('action ', action);
         /* Find if product already added to cart change quantitiy */
         Cart.findOne({
             owner: userId,
@@ -138,9 +174,16 @@ module.exports = function (module, appContext) {
                             });
                         } else {
                             console.log('updated to cart');
-                            res.json({
-                                success: true,
-                                message: "Successfully updated to cart"
+                            Cart.count({
+                                owner: req.decoded.user._id
+                            }, (err, count) => {
+                                let cartCount = count;
+                                console.log('cartCount ', cartCount);
+                                res.json({
+                                    success: true,
+                                    message: "Successfully updated to cart",
+                                    cartCount
+                                });
                             });
                         }
                     });
@@ -156,10 +199,19 @@ module.exports = function (module, appContext) {
                             });
                         } else {
                             console.log('added to cart');
-                            res.json({
-                                success: true,
-                                message: "Successfully added to cart"
-                            });
+                            setTimeout(() => {
+                                Cart.count({
+                                    owner: req.decoded.user._id
+                                }, (err, count) => {
+                                    let cartCount = count;
+                                    console.log('cartCount ', cartCount);
+                                    res.json({
+                                        success: true,
+                                        message: "Successfully added to cart",
+                                        cartCount
+                                    });
+                                });
+                            }, 1000);
                         }
                     });
                 }
@@ -177,20 +229,25 @@ module.exports = function (module, appContext) {
                             callback(err, product);
                         }
                     });
-
-
                 },
                 function (product) {
-                    console.log('Found product details ', product);
+                    // console.log('Found product details ', product);
                     productQuantity = product.quantity;
                     var updatedQty = action === 1 ? (productQuantity - 1) : (productQuantity + 1);
+
+                    console.log('productQuantity ', productQuantity);
+                    console.log('updatedQty ', updatedQty);
+                    console.log('cartProductQty ', cartProductQty);
 
                     if (updatedQty === 0) {
                         console.log('Product will be 0, show alert');
                         cb('Product stock is empty. Try after some time!', null);
-                    } else if (updatedQty > productQuantity) {
+                    } else if (cartProductQty > updatedQty) {
                         console.log('Adding more than existing stock');
                         cb("You can't add more quantity than existing stock", null);
+                    } else if (action === -1 && cartProductQty === 1) {
+                        console.log('cant decrease less than 1');
+                        cb("Minimum 1 quantity of product is required.", null);
                     } else {
                         console.log('cartProductQty ', cartProductQty);
                         var existProductQty = action === 1 ? (cartProductQty + 1) : (cartProductQty - 1);
@@ -235,18 +292,18 @@ module.exports = function (module, appContext) {
                     });
                 },
                 function (product) {
-                    console.log('Found product details ', product);
+                    console.log('Found product details ');
                     productQuantity = product.quantity;
                     var updatedQty = action === 1 ? (productQuantity - 1) : (productQuantity + 1);
+
+                    console.log('productQuantity ', productQuantity);
+                    console.log('updatedQty ', updatedQty);
 
                     if (updatedQty === 0) {
                         console.log('Product will be 0, show alert');
                         cb('Product stock is empty. Try after some time!', null);
-                    } else if (updatedQty > productQuantity) {
-                        console.log('Adding more than existing stock');
-                        cb("You can't add more quantity than existing stock", null);
                     } else {
-                        let cart = new Cart();
+                        var cart = new Cart();
                         cart.owner = req.decoded.user._id;
                         cart.totalPrice = product.price;
                         cart.products.push({
@@ -267,17 +324,17 @@ module.exports = function (module, appContext) {
             var updatedQty = action === 1 ? (productQuantity - 1) : (productQuantity + 1);
             console.log('updatedQty ', updatedQty);
 
-            Product.updateOne({
+            Product.findOneAndUpdate({
                 _id: productId
             }, {
                 $set: {
                     quantity: updatedQty
                 }
-            }, (err, product) => {
+            }, function (err, result) {
                 if (err) {
                     console.log('Update Qty err ', err);
                 }
-                if (product) {
+                if (result) {
                     console.log('Qty updated to ', updatedQty);
                 }
             });
@@ -285,8 +342,8 @@ module.exports = function (module, appContext) {
     });
 
     /* Remove Product from cart */
-    app.post('/api/removeProduct', (req, res, next) => {
-        const id = req.body.id;
+    app.post('/api/removeProduct', checkJWT, function (req, res) {
+        var id = req.body.id;
         console.log('remove id ', id);
 
         Cart.findOne({
@@ -298,8 +355,8 @@ module.exports = function (module, appContext) {
                 console.log(product);
                 console.log(product.products[0].quantity);
                 console.log(product.products[0].product);
-                const productId = product.products[0].product;
-                const Qty = product.products[0].quantity;
+                var productId = product.products[0].product;
+                var Qty = product.products[0].quantity;
 
                 Cart.findOneAndDelete({
                     _id: id
@@ -327,9 +384,16 @@ module.exports = function (module, appContext) {
                                     message: err
                                 });
                             } else {
-                                res.json({
-                                    success: true,
-                                    message: 'Item removed'
+                                Cart.count({
+                                    owner: req.decoded.user._id
+                                }, (err, count) => {
+                                    let cartCount = count;
+                                    console.log('cartCount ', cartCount);
+                                    res.json({
+                                        success: true,
+                                        message: "Product is removed from cart",
+                                        cartCount
+                                    });
                                 });
                             }
                         });
@@ -339,8 +403,129 @@ module.exports = function (module, appContext) {
         });
     });
 
-    /* Confirm Order */
+    /* Clear Cart */
+    app.post('/api/clearCart', checkJWT, (req, res, next) => {
+        console.log('Clear cart request');
+        Cart.find({
+            owner: req.decoded.user._id
+        }, function (err, result) {
+            if (err) {
 
+            } else {
+                console.log('Found cart info', result);
+
+                var cartProduct = result.length;
+                var processProduct = 0;
+
+                function callback() {
+                    if (cartProduct === processProduct) {
+                        console.log('All items are removed now');
+                        res.json({
+                            success: true,
+                            message: 'All products are clear'
+                        });
+                    }
+                }
+
+                result.forEach(data => {
+                    const id = data._id;
+                    const Qty = data.products[0].quantity;
+                    const productId = data.products[0].product;
+                    console.log(Qty);
+                    console.log(productId);
+
+                    Product.update({
+                        _id: productId
+                    }, {
+                        $inc: {
+                            quantity: +Qty,
+                        }
+                    }, function (err, result) {
+                        if (err) {
+                            console.log('Update product Qty err ', err);
+                        } else {
+                            console.log('Qty updated now remove from cart ', id);
+                            Cart.findOneAndDelete({
+                                _id: id
+                            }, function (err, result) {
+                                if (err) {
+                                    console.log('Remove product from cart err ', err);
+                                } else {
+                                    console.log('Item removed from cart');
+                                    processProduct++;
+                                    callback();
+                                }
+                            });
+                        }
+                    })
+                });
+            }
+        })
+    });
+
+    /* Confirm Order */
+    app.post('/api/orderCart', checkJWT, (req, res, next) => {
+        console.log('order cart request');
+
+        Cart.find({
+            owner: req.decoded.user._id
+        }, function (err, result) {
+            if (err) {
+                res.json({
+                    success: false,
+                    message: err
+                });
+            } else {
+                console.log('Found cart info', result);
+
+                var cartProduct = result.length;
+                var processProduct = 0;
+
+                function callback() {
+                    if (cartProduct === processProduct) {
+                        console.log('All items are added for order');
+                        res.json({
+                            success: true,
+                            message: ''
+                        });
+                    }
+                }
+
+                result.forEach(data => {
+                    const id = data._id;
+                    const Qty = data.products[0].quantity;
+                    const productId = data.products[0].product;
+                    console.log(Qty);
+                    console.log(productId);
+
+                    Product.update({
+                        _id: productId
+                    }, {
+                        $inc: {
+                            quantity: -Qty,
+                        }
+                    }, function (err, result) {
+                        if (err) {
+                            console.log('Update product Qty err ', err);
+                        } else {
+                            console.log('Qty updated now remove from cart ', id);
+                            Cart.findOneAndDelete({
+                                _id: id
+                            }, function (err, result) {
+                                if (err) {
+                                    console.log('Remove product from cart err ', err);
+                                } else {
+                                    console.log('Item removed from cart');
+                                    processProduct++;
+                                    callback();
+                                }
+                            });
+                        }
+                    })
+                });
+            }
+        })
+    });
 
 
 };

@@ -7,28 +7,29 @@
         <i class="fa fa-refresh fa-spin"></i>
       </h1>
     </div>
+    <br />
     <mdb-card>
-
       <mdb-card-header class="info-color white-text text-center py-4">
         <h5>
-          <strong>Profile </strong>
+          <strong>Profile Update</strong>
         </h5>
       </mdb-card-header>
       <mdb-card-body class="px-lg-5 pt-0">
-        <form class="text-center" style="color: #757575;">
+        <form class="text-center" style="color: #757575;" *ngIf="usersDetails">
 
           <div class="md-form mt-3">
-            <input type="text" id="materialContactFormName" class="form-control" mdbInputDirective>
+            <input type="text" id="materialContactFormName" class="form-control" mdbInputDirective [formControl]="name">
             <label for="materialContactFormName">Name</label>
           </div>
 
           <div class="md-form">
-            <input type="email" id="materialContactFormEmail" class="form-control" mdbInputDirective>
+            <input type="email" id="materialContactFormEmail" class="form-control" mdbInputDirective value={{usersDetails.email}}
+              [disabled]=emailDisable>
             <label for="materialContactFormEmail">E-mail</label>
           </div>
 
           <button mdbBtn color="info" outline="true" rounded="true" block="true" class="z-depth-0 my-4 waves-effect"
-            mdbWavesEffect type="submit">Save</button>
+            mdbWavesEffect type="submit" (click)="updateProfile()">Save</button>
 
         </form>
       </mdb-card-body>
