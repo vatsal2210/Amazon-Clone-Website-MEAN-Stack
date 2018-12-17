@@ -5,6 +5,7 @@ module.exports = function (module, appContext) {
     const config = appContext.config;
     const Product = module.Product;
     const Review = module.Review;
+    const Cart = module.Cart;
     const Token = module.Token;
     const checkJWT = require("../util/jwtUtil.js");
     const {
@@ -48,7 +49,7 @@ module.exports = function (module, appContext) {
         console.log('Products page found');
         const perPage = 100;
         const page = req.query.page;
-        console.log('page ', page);
+        console.log('page ', page);        
 
         async.parallel([
             function (callback) {
@@ -71,10 +72,11 @@ module.exports = function (module, appContext) {
                         if (err) return next(err);
                         callback(err, products);
                     });
-            }
+            },           
         ], function (err, results) {
             let totalProducts = results[0];
-            let products = results[1];
+            let products = results[1];            
+
             const topProducts = [];
             console.log('products ', products);
             for (let i = 0; i < products.length; i++) {
@@ -88,7 +90,7 @@ module.exports = function (module, appContext) {
                 success: true,
                 products,
                 totalProducts: totalProducts,
-                topProducts: topProducts,
+                topProducts: topProducts,                
                 pages: Math.ceil(totalProducts / perPage)
             });
         });

@@ -6,12 +6,12 @@
       <div class="col-md-9">
         <p class="lead font-weight-bold">Shopping Cart</p>
         <div class="row">
-          <div class="offset-8 col-2 d-none d-md-block">
+          <div class="offset-6 col-2 ">
             <p>
               <small class="text-muted">Price</small>
             </p>
           </div>
-          <div class="col-2 d-none d-md-block">
+          <div class="col-2">
             <p>
               <small class="text-muted">Quantity</small>
             </p>
@@ -20,11 +20,6 @@
         <hr class="mt-0">
         <div *ngFor="let item of cartItems; let i=index;" class="cartItem">
           <div class="row">
-            <div class="col-4 col-md-2">
-              <!-- <a routerLink="/product/{{ item._id }}">
-                <img src="" alt="productImage" class="img-fluid img-thumbnail">
-              </a> -->
-            </div>
             <div class="col-5 col-md-6">
               <h5>
                 <span> {{item.products[0].product.title}} - {{item.products[0].product.price | currency}}</span>
@@ -37,32 +32,129 @@
             <div class="col-1 col-md-2">
               <h6 class="font-weight-bold text-danger">{{item.totalPrice | currency}}</h6>
             </div>
-            <div class="col-1 mt-5 mt-md-0 p-0">
-              <input type='button' value='-' class='qtyminus' field='quantity' (click)="updateQty(item.products[0].product, -1)" />
-              <!-- <input type="number" class="form-control" min="1" max="99" [(ngModel)]="quantities[i]"> -->
-              <input type="number" class="form-control" [formControl]="productQty" value="{{item.products[0].quantity}}">
-              <input type='button' value='+' class='qtyplus' field='quantity' (click)="updateQty(item.products[0].product, +1)" />
+            <div class="col-2 mt-5 mt-md-0 p-0 btn-group" role="group">
+              <button type='button' value='-' class='qtyminus' field='quantity' (click)="updateQty(item.products[0].product, -1)"
+                style="height:40px;">-</button>
+              <input type="number" class="form-control" [formControl]="productQty" value="{{item.products[0].quantity}}"
+                style="text-align:center;">
+              <button type='button' value='+' class='qtyplus' field='quantity' (click)="updateQty(item.products[0].product, +1)"
+                style="height:40px;">+</button>
             </div>
           </div>
           <hr>
         </div>
-        <h5 class="text-right">Total:
-          <!-- <span class="ml-1 font-weight-bold text-danger">{{ cartTotal | currency }}</span> -->
-          <span class="ml-1 font-weight-bold text-danger">Total Price</span>
-        </h5>
+        <br />
+        <br />
+        <button class="btn btn-danger" (click)="frame1.show()" style="float:right">Clear Cart</button>
       </div>
       <div class="col-md-3">
         <div class="card bg-light">
           <div class="card-body">
             <h5>Total:
-              <!-- <span class="ml-1 font-weight-bold text-danger">{{ cartTotal | currency }}</span> -->
-              <span class="ml-1 font-weight-bold text-danger">Cart Total</span>
+              <span class="ml-1 font-weight-bold text-danger">{{ totalPrice | currency }}</span>
             </h5>
             <br>
-            <button class="btn btn-warning btn-block" (click)="checkout()" [disabled]="btnDisabled">Checkout</button>
+            <button class="btn btn-warning btn-block" (click)="frame2.show()" [disabled]="btnDisabled">Checkout</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+
+<div mdbModal #frame1="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+  aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">Are you sure?</p>
+      </div>
+
+      <div class="modal-body">
+        <i class="fa fa-question fa-4x animated rotateIn"></i>
+      </div>
+
+      <div class="modal-footer flex-center">
+        <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="clearCart();frame1.hide()">Yes</a>
+        <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect data-dismiss="modal"
+          #dismissFrame1 (click)="frame1.hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #frame2="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
+  aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">Are you sure want to order?</p>
+      </div>
+
+      <div class="modal-body">
+        <i class="fa fa-question fa-4x animated rotateIn"></i>
+      </div>
+
+      <div class="modal-footer flex-center">
+        <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="checkout();frame2.hide();receipt.show();">Yes</a>
+        <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect data-dismiss="modal"
+          #dismissFrame2 (click)="frame2.hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #receipt="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <!--Header-->
+      <div class="modal-header text-center">
+        <p class="modal-title w-100 font-weight-bold"> Order Receipt </p>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="receipt.hide(); refreshPage();"
+          #dismissFrame>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!--Body-->
+      <div class="modal-body">
+        <div class="table-wrapper table-responsive-md">
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th> # </th>
+                <th class="th-lg">
+                  <a (click)="sortBy('name')">Name</a>
+                </th>
+                <th class="th-lg">
+                  <a (click)="sortBy('quantity')">Quantity
+                  </a>
+                </th>
+                <th class="th-lg">
+                  <a (click)="sortBy('price')">Total
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody *ngIf="cartItems">
+              <tr *ngFor="let product of cartItems; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{product.products[0].product.title }}</td>
+                <td>{{product.products[0].product.quantity}}</td>
+                <td>{{product.totalPrice | currency}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <br />
+        <h5>Total:
+          <span class="ml-1 font-weight-bold text-danger">{{ totalPrice | currency }}</span>
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>

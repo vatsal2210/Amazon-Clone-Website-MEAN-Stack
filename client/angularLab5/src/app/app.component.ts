@@ -13,14 +13,16 @@ export class AppComponent implements OnInit {
 
   title = 'Lab5';
   isManager;
+  cartItems = 0;
 
   constructor(private router: Router, private user: UserService, private cart: CartService) { }
 
   async ngOnInit() {
     await this.user.getProfile();
-    console.log('app', this.user.isManager);
+    console.log('app', this.user);
     this.isManager = this.user.isManager;
-    this.cart.cartItems = this.cart.getCart().length;
+    this.cartItems = this.user.cartItems;
+    console.log(this.cartItems);
   }
 
   get token() {
