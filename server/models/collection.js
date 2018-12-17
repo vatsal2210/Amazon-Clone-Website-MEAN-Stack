@@ -18,14 +18,15 @@ const CollectionSchema = new Schema({
         default: false,
     },
     products: [{
-        product: {
+        _id: false,
+        product: {            
             type: Schema.Types.ObjectId,
             ref: 'Product'
         },
-        // quantity: {
-        //     type: Number,
-        //     default: 1
-        // },
+        quantity: {
+            type: Number,
+            default: 1
+        },
     }]
 });
 

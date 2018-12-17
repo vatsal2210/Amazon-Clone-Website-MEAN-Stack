@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { RestapiService } from '../restapi.service';
+import { AlertService } from '../alert.service';
+import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -6,10 +10,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  usersDetails;
 
-  constructor() { }
+  constructor(private rest: RestapiService, private alert: AlertService, private user: UserService, private router: Router) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      const data = await this.rest.get('/api/profile');
+      console.log(data);
+      data['success'] ? (this.usersDetails = data['user']) : this.alert.error('Could not fetch details!');
+    } catch (error) {
+      this.alert.error(error['message']);
+    }
   }
 
 }

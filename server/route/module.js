@@ -12,6 +12,9 @@ module.exports = function (appContext) {
     const Review = require('../models/review');
     module.Review = Review;
 
+    const Cart = require('../models/cart');
+    module.Cart = Cart;
+
     const Order = require('../models/order');
     module.Order = Order;
 
@@ -25,7 +28,6 @@ module.exports = function (appContext) {
     const accountRoute = require('./account.js')(module, appContext);
     const userRoute = require("./user.js")(module, appContext);
     const productRoute = require('./products.js')(module, appContext);
-    const sellerRoute = require("./seller.js")(module, appContext);
     const adminRoute = require("./admin.js")(module, appContext);
     const collectionRoute = require("./collection.js")(module, appContext);
 

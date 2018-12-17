@@ -7,8 +7,10 @@
 
   <links>
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link waves-light" mdbWavesEffect>About</a>
+      <li class="nav-item">
+        <a class="nav-link" (click)="basicModal.show()" mdbWavesEffect>
+          About
+        </a>
       </li>
     </ul>
 
@@ -53,15 +55,55 @@
         </div>
       </li>
       <li class="nav-item" *ngIf="!isManager">
-        <a *ngIf="token" (click)="collapse()" routerLink="/cart" routerLinkActive="active" class="nav-link">
+        <a *ngIf="token" routerLink="/cart" routerLinkActive="active" class="nav-link">
           <i class="fa fa-shopping-cart mr-1"></i> Cart
-          <span class="badge badge-warning ml-1">0</span>
+          <!-- <span class="badge badge-warning ml-1">0</span> -->
+          <span *ngIf="cart.cartItems" class="badge badge-warning ml-1">{{ cart.cartItems }}</span>
         </a>
       </li>
     </ul>
   </links>
 </mdb-navbar>
 
+<div mdbModal #basicModal="mdbModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel"
+  aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">About Website</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item">
+            Top Products List
+          </li>
+          <li class="list-group-item">
+            Customize Collections and Other users collection List
+          </li>
+          <li class="list-group-item">
+            Comment and Like products
+          </li>
+          <li class="list-group-item">
+            Add to cart / Purchase order / Change quantity
+          </li>
+          <li class="list-group-item">
+            Store Manager Access: Users access
+          </li>
+          <li class="list-group-item">
+            Store Manager Access: Maintain Products
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" mdbBtn color="primary" class="waves-light" aria-label="Close" (click)="basicModal.hide()"
+          mdbWavesEffect>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <router-outlet></router-outlet>
 
 <!-- Footer -->

@@ -24,10 +24,15 @@ export class LoginComponent implements OnInit {
 
   validate() {
     if (this.email) {
-      if (this.password) {
-        return true;
+      if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)) {
+      // if (/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(this.email)) {
+        if (this.password) {
+          return true;
+        } else {
+          this.alert.error('Password is not entered!');
+        }
       } else {
-        this.alert.error('Password is not entered!');
+        this.alert.error('Enter valid Email!');
       }
     } else {
       this.alert.error('Email is not entered!');
@@ -45,7 +50,14 @@ export class LoginComponent implements OnInit {
 
         if (data['success']) {
           localStorage.setItem('token', data['token']);
+          console.log(data['manager']);
           await this.user.getProfile();
+          if (data['manager'] === true) {
+            console.log('manager');
+            this.router.navigateByUrl('/manager');
+          } else {
+            this.router.navigateByUrl('/');
+          }
         } else {
           this.alert.error(data['message']);
         }

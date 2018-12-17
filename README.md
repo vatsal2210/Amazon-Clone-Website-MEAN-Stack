@@ -9,3 +9,9 @@ https://www.w3schools.com/bootstrap4/bootstrap_navbar.asp
 
 E-commerce View:
 https://mdbootstrap.com/docs/angular/sections/e-commerce/#APIref
+
+Validation:
+https://www.w3resource.com/javascript/form/email-validation.php
+
+Checkbox:
+https://stackoverflow.com/questions/34997128/angular-2-get-values-of-multiple-checked-checkboxes

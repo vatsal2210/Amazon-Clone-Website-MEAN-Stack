@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CartComponent } from './cart/cart.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -10,12 +9,9 @@ import { ManagerComponent } from './manager/manager.component';
 import { UsersComponent } from './admin/users/users.component';
 import { ProductsComponent } from './admin/products/products.component';
 import { CollectionComponent } from './collection/collection.component';
+import { CartComponent } from './cart/cart.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent
-  },
   {
     path: 'register',
     component: RegistrationComponent,
@@ -49,9 +45,14 @@ const routes: Routes = [
     component: ProductsComponent
   },
   {
+    path: '',
+    pathMatch: 'full',
+    component: HomeComponent
+  },
+  {
     path: '**',
     redirectTo: ''
-  }
+  },
 ];
 
 @NgModule({

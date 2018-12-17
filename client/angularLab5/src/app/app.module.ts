@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AlertService } from './alert.service';
 import { UserService } from './user.service';
 import { RestapiService } from './restapi.service';
+import { CartService } from './cart.service';
 
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
@@ -50,7 +51,7 @@ import { CollectionComponent } from './collection/collection.component';
     MDBBootstrapModule.forRoot(),
     CarouselModule, ModalModule, WavesModule, InputsModule, ButtonsModule, CardsFreeModule
   ],
-  providers: [AlertService, UserService, RestapiService],
+  providers: [AlertService, UserService, RestapiService, CartService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
