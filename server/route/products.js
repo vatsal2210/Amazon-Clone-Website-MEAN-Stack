@@ -11,14 +11,42 @@ module.exports = function (module, appContext) {
         check,
         validationResult
     } = require('express-validator/check');
-    const nodemailer = require('nodemailer');
-    const crypto = require('crypto');
     const async = appContext.async;
+
+    /* Get Top 10 Products */
+    // app.get('/api/topproducts', (req, res, next) => {
+    //     console.log('Products page found');
+    //     const perPage = 10;
+
+    //     async.parallel([
+    //         function (callback) {
+    //             Product.count({}, (err, count) => {
+    //                 let totalProducts = count;
+    //                 callback(err, totalProducts);
+    //             });
+    //         },
+    //         function (callback) {
+    //             Product.find({})
+    //                 .populate('review')
+    //                 .exec((err, products) => {
+    //                     if (err) return next(err);
+    //                     callback(err, products);
+    //                 });
+    //         }
+    //     ], function (err, results) {
+    //         let topproducts = results[1];
+    //         console.log(topproducts);
+    //         res.json({
+    //             success: true,
+    //             topproducts,
+    //         });
+    //     });
+    // });
 
     /* Get Product List */
     app.get('/api/products', (req, res, next) => {
         console.log('Products page found');
-        const perPage = 10;
+        const perPage = 100;
         const page = req.query.page;
         console.log('page ', page);
 
@@ -31,7 +59,11 @@ module.exports = function (module, appContext) {
                 });
             },
             function (callback) {
-                Product.find({})
+                Product.find({
+                        quantity: {
+                            $gt: 0
+                        }
+                    })
                     .skip(perPage * page)
                     .limit(perPage)
                     .populate('review')
@@ -43,11 +75,20 @@ module.exports = function (module, appContext) {
         ], function (err, results) {
             let totalProducts = results[0];
             let products = results[1];
-            console.log('totalProducts ', totalProducts);
+            const topProducts = [];
+            console.log('products ', products);
+            for (let i = 0; i < products.length; i++) {
+                console.log(products[i].reviews.length);
+                if (products[i].reviews.length >= 2) {
+                    topProducts.push(products[i]);
+                }
+            }
+            console.log(topProducts.length);
             res.json({
                 success: true,
                 products,
                 totalProducts: totalProducts,
+                topProducts: topProducts,
                 pages: Math.ceil(totalProducts / perPage)
             });
         });

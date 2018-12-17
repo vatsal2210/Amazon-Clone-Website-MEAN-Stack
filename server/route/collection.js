@@ -14,12 +14,39 @@ module.exports = function (module, appContext) {
     const crypto = require('crypto');
     const async = appContext.async;
 
-    /* Get Collections List */
+    /* Get All collections except that user */
     app.get('/api/collections', checkJWT, (req, res, next) => {
+        console.log('Find all collection details');
+        Collection.find({
+                visibility: true
+            })
+            .populate('userId')
+            .populate('products.product')
+            .exec((err, collection) => {
+                if (err) {
+                    res.json({
+                        success: false,
+                        message: 'Something went wrong. Try again!'
+                    });
+                } else {
+                    console.log('Found products ', collection);
+                    if (collection) {
+                        res.json({
+                            success: true,
+                            collection
+                        });
+                    }
+                }
+            });
+    });
+
+    /* Get Collections List by user */
+    app.get('/api/usercollection', checkJWT, (req, res, next) => {
         console.log('Find all collection details');
 
         Collection.find({
-                visibility: true
+                visibility: true,
+                userId: req.decoded.user._id
             },
             function (err, collection) {
                 if (err) {
@@ -143,14 +170,11 @@ module.exports = function (module, appContext) {
             const id = req.body.id;
             const title = req.body.title;
             const description = req.body.description;
-            const productId = req.body.productId;
+            // const productId = req.body.productId;
             const visibility = req.body.visibility;
-            const userId = req.decoded.user._id;
+            //const userId = req.decoded.user._id;
 
-            console.log(title);
-            console.log(description);
             console.log(productId);
-            console.log(userId);
 
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -162,20 +186,21 @@ module.exports = function (module, appContext) {
             }
 
             // Compare name of update collection
-            Collection.updateOne({
+            Collection.findOneAndUpdate({
                     _id: id
                 }, {
                     $set: {
                         name: title,
                         description: description,
                         visibility: visibility,
-                        // productId.map(data => {
-                        //     console.log(data);
-                        //     collection.products.push({
-                        //         product: data
-                        //     });
-                        // });
-                    }
+                    },
+                    // $push: {
+                    //     products: productId.map(data => {
+                    //         products.push({
+                    //             product: data
+                    //         });
+                    //     })
+                    // }
                 },
                 function (err, product) {
                     if (err) {
@@ -191,6 +216,79 @@ module.exports = function (module, appContext) {
                         });
                     }
                 });
+        });
+
+    /* Update Collection product Qty */
+    app.post('/api/updateCollectionProduct', checkJWT,
+        function (req, res, next) {
+            console.log('update collection ');
+            const id = req.body.id;
+            const productId = req.body.productId;
+            const status = req.body.status;
+
+            console.log(id);
+            console.log(productId);
+            console.log(status);
+
+            if (status === 0) {
+                console.log('remove product');
+                removeCollectionProduct();
+            } else {
+                console.log('add product');
+                addCollectionProduct();
+            }
+
+            function removeCollectionProduct() {
+                Collection.findOneAndUpdate({
+                        _id: id
+                    }, {
+                        $pull: {
+                            "products": {
+                                product: productId
+                            }
+                        },
+                    },
+                    function (err, product) {
+                        if (err) {
+                            console.log('err found in update collection ', err);
+                            res.send({
+                                success: false,
+                                message: 'Something went wrong!. ' + err,
+                            });
+                        } else {
+                            res.send({
+                                success: true,
+                                message: 'Collection Details Updated'
+                            });
+                        }
+                    });
+            }
+
+            function addCollectionProduct() {
+                Collection.findOneAndUpdate({
+                        _id: id
+                    }, {
+                        $push: {
+                            "products": {
+                                product: productId
+                            }
+                        }
+                    },
+                    function (err, product) {
+                        if (err) {
+                            console.log('err found in update collection ', err);
+                            res.send({
+                                success: false,
+                                message: 'Something went wrong!. ' + err,
+                            });
+                        } else {
+                            res.send({
+                                success: true,
+                                message: 'Collection Details Updated'
+                            });
+                        }
+                    });
+            }
         });
 
     /* Delete Collection */

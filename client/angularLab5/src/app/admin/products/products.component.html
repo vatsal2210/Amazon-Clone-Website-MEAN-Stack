@@ -53,7 +53,7 @@
 
   <!-- Add / Update Product -->
   <div mdbModal #frame="mdbModal" class="modal fade left" id="frameModalTop" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel" aria-hidden="true">
+    aria-labelledby="myModalLabel" aria-hidden="true" style="overflow:auto;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <!--Header-->
@@ -75,11 +75,11 @@
             <label data-error="wrong" data-success="right" for="form34"> Title </label>
           </div>
 
-          <div class="md-form mb-5">
+          <!-- <div class="md-form mb-5">
             <i class="fa fa-user prefix grey-text"></i>
             <input type="file" id="form34" class="form-control validate" mdbInputDirective (change)="handleFileInput($event.target.files)">
             <label data-error="wrong" data-success="right" for="form34"></label>
-          </div>
+          </div> -->
 
           <div class="md-form mb-5">
             <i class="fa fa-user prefix grey-text"></i>
@@ -123,7 +123,7 @@
   </div>
 
   <div mdbModal #frame1="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel1" aria-hidden="true">
+aria-labelledby="myModalLabel1" aria-hidden="true" style="overflow:auto;">
     <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
       <div class="modal-content text-center">
         <div class="modal-header d-flex justify-content-center">

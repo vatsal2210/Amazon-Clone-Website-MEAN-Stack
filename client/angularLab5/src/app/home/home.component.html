@@ -1,26 +1,26 @@
 <section id="home">
 
-  <div *ngIf="!products" class="m-auto">
-    <h1 class="text-center display-3 mt-5">
-      <i class="fa fa-refresh fa-spin"></i>
-    </h1>
-  </div>
-
   <div class="container-fluid">
     <app-alert></app-alert>
+    <div *ngIf="!products" class="m-auto">
+      <h1 class="text-center display-3 mt-5">
+        <i class="fa fa-refresh fa-spin"></i>
+      </h1>
+    </div>
+
     <b>
       Top Selling Products:
     </b>
     <br />
     <mdb-carousel class="carousel slide carousel-fade" [animation]="'fade'" style="padding-bottom: 15px;">
-      <div *ngFor="let product of products">
+      <div *ngFor="let product of topproducts; let i = index">
         <mdb-carousel-item>
           <div class="view w-100">
             <img src='http://localhost:8080/img/{{product.image}}' alt="{{product.image}}" class="item">
             <div class="mask rgba-black-light waves-light" mdbWavesEffect></div>
           </div>
           <div class="carousel-caption">
-            <h3 class="h3-responsive">{{product.title}}</h3>
+            <h3 class="h3-responsive">{{product.title}} - {{i+1}}</h3>
           </div>
         </mdb-carousel-item>
       </div>
@@ -40,6 +40,9 @@
             </div>
           </div>
         </a>
+        <button *ngIf="token" class="btn btn-warning btn-block" [disabled]="cartbtnDisabled" (click)="addToCart(product._id)">Add
+          to
+          Cart</button>
       </div>
 
       <div mdbModal #frame="mdbModal" class="modal fade" id="frameModalTop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
@@ -88,7 +91,7 @@
                           <hr />
                         </div>
                       </div>
-                      <div class="card bg-light my-5">
+                      <div class="card bg-light my-5" *ngIf="token">
                         <div class="card-body">
                           <h4 class="card-title">Add a Review</h4>
                           <hr>
@@ -101,7 +104,7 @@
                             <ngb-rating [(rate)]="myReview.rating" [starTemplate]="t" [readonly]="false" max="5"></ngb-rating>
                             <br />
                             <br />
-                            <button type="button" class="btn btn-info" (click)="postReview()" [disabled]="btnDisabled">Post
+                            <button type="button" class="btn btn-info" (click)="postFrame.show();" [disabled]="btnDisabled">Post
                               Review</button>
                           </div>
                         </div>
@@ -119,6 +122,27 @@
   </div>
 </section>
 
+<div mdbModal #postFrame="mdbModal" class="modal fade top" id="frameModalTop" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel1" aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog modal-sm modal-notify modal-danger" role="document">
+    <div class="modal-content text-center">
+      <div class="modal-header d-flex justify-content-center">
+        <p class="heading">Are you sure?</p>
+      </div>
+
+      <div class="modal-body">
+        <i class="fa fa-question fa-4x animated rotateIn"></i>
+      </div>
+
+      <div class="modal-footer flex-center">
+        <a type="button" mdbBtn color="danger" outline="true" class="waves-effect" mdbWavesEffect (click)="confirmation();postFrame.hide()">Yes</a>
+        <button type="button" mdbBtn color="primary" outline="true" class="waves-light" mdbWavesEffect data-dismiss="modal"
+          #dismissFrame1 (click)="postFrame.hide()">Close</button>
+      </div>
+    </div>
+    <!--/.Content-->
+  </div>
+</div>
 
 <ng-template #t let-fill="fill">
   <span *ngIf="fill === 100" class="star full">&#9733;</span>

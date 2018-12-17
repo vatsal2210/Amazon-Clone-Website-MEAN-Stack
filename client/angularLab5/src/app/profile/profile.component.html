@@ -1,3 +1,37 @@
-<p>
-  profile works!
-</p>
+<section id="home">
+
+  <div class="container-fluid">
+    <app-alert></app-alert>
+    <div *ngIf="!usersDetails" class="m-auto">
+      <h1 class="text-center display-3 mt-5">
+        <i class="fa fa-refresh fa-spin"></i>
+      </h1>
+    </div>
+    <mdb-card>
+
+      <mdb-card-header class="info-color white-text text-center py-4">
+        <h5>
+          <strong>Profile </strong>
+        </h5>
+      </mdb-card-header>
+      <mdb-card-body class="px-lg-5 pt-0">
+        <form class="text-center" style="color: #757575;">
+
+          <div class="md-form mt-3">
+            <input type="text" id="materialContactFormName" class="form-control" mdbInputDirective>
+            <label for="materialContactFormName">Name</label>
+          </div>
+
+          <div class="md-form">
+            <input type="email" id="materialContactFormEmail" class="form-control" mdbInputDirective>
+            <label for="materialContactFormEmail">E-mail</label>
+          </div>
+
+          <button mdbBtn color="info" outline="true" rounded="true" block="true" class="z-depth-0 my-4 waves-effect"
+            mdbWavesEffect type="submit">Save</button>
+
+        </form>
+      </mdb-card-body>
+    </mdb-card>
+  </div>
+</section>

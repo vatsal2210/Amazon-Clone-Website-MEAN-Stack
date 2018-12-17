@@ -4,11 +4,11 @@
     </button> -->
   <div *ngIf='alert.isArray'>
     <div *ngFor="let data of alert.message">
-      > {{ data.msg }}
+      {{ data.msg }}
       <br />
     </div>
   </div>
   <div *ngIf='!alert.isArray'>
-    > {{ alert.message }}
+    {{ alert.message }}
   </div>
 </ngb-alert>

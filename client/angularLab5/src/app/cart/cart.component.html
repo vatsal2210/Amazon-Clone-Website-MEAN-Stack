@@ -1,3 +1,68 @@
-<p>
-  cart works!
-</p>
+<section id="cart">
+  <div class="container-fluid p-5">
+    <app-alert></app-alert>
+    <h3 *ngIf="!cartItems.length" class="display-2 text-center mt-5">Cart is Empty</h3>
+    <div *ngIf="cartItems.length" class="row">
+      <div class="col-md-9">
+        <p class="lead font-weight-bold">Shopping Cart</p>
+        <div class="row">
+          <div class="offset-8 col-2 d-none d-md-block">
+            <p>
+              <small class="text-muted">Price</small>
+            </p>
+          </div>
+          <div class="col-2 d-none d-md-block">
+            <p>
+              <small class="text-muted">Quantity</small>
+            </p>
+          </div>
+        </div>
+        <hr class="mt-0">
+        <div *ngFor="let item of cartItems; let i=index;" class="cartItem">
+          <div class="row">
+            <div class="col-4 col-md-2">
+              <!-- <a routerLink="/product/{{ item._id }}">
+                <img src="" alt="productImage" class="img-fluid img-thumbnail">
+              </a> -->
+            </div>
+            <div class="col-5 col-md-6">
+              <h5>
+                <span> {{item.products[0].product.title}} - {{item.products[0].product.price | currency}}</span>
+              </h5>
+              <!-- <p class="m-0">
+                <small class="text-muted">Name</small>
+              </p> -->
+              <a class="text-danger" (click)="removeProduct(item._id)">Delete</a>
+            </div>
+            <div class="col-1 col-md-2">
+              <h6 class="font-weight-bold text-danger">{{item.totalPrice | currency}}</h6>
+            </div>
+            <div class="col-1 mt-5 mt-md-0 p-0">
+              <input type='button' value='-' class='qtyminus' field='quantity' (click)="updateQty(item.products[0].product, -1)" />
+              <!-- <input type="number" class="form-control" min="1" max="99" [(ngModel)]="quantities[i]"> -->
+              <input type="number" class="form-control" [formControl]="productQty" value="{{item.products[0].quantity}}">
+              <input type='button' value='+' class='qtyplus' field='quantity' (click)="updateQty(item.products[0].product, +1)" />
+            </div>
+          </div>
+          <hr>
+        </div>
+        <h5 class="text-right">Total:
+          <!-- <span class="ml-1 font-weight-bold text-danger">{{ cartTotal | currency }}</span> -->
+          <span class="ml-1 font-weight-bold text-danger">Total Price</span>
+        </h5>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h5>Total:
+              <!-- <span class="ml-1 font-weight-bold text-danger">{{ cartTotal | currency }}</span> -->
+              <span class="ml-1 font-weight-bold text-danger">Cart Total</span>
+            </h5>
+            <br>
+            <button class="btn btn-warning btn-block" (click)="checkout()" [disabled]="btnDisabled">Checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

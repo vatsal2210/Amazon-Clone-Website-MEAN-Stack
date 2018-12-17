@@ -83,34 +83,34 @@ module.exports = function (module, appContext) {
         }
 
         console.log(req.body.id);
-        console.log('file', JSON.stringify(req.body.file));
+        //console.log('file', JSON.stringify(req.body.file));
 
-        var upload = multer({ //multer settings
-            storage: storage
-        }).single('file');
+        // var upload = multer({ //multer settings
+        //     storage: storage
+        // }).single('file');
 
-        upload(req, res, function (err) {
-            console.log(req.file);
-            if (err) {
-                console.log('File upload error ', err);
-                return;
-            }
-            console.log('file uploaded ', res);
-        });
+        // upload(req, res, function (err) {
+        //     console.log(req.file);
+        //     if (err) {
+        //         console.log('File upload error ', err);
+        //         return;
+        //     }
+        //     console.log('file uploaded ', res);
+        // });
 
         let product = new Product();
         product.title = req.body.title;
         product.price = req.body.price;
         product.quantity = req.body.quantity;
         product.description = req.body.description;
-        product.image = uniqid() + ".png";
+        product.image = product._id + ".png";
         product.tax = req.body.tax;
 
 
         if (req.body.id != null && req.body.id != undefined) {
-            // updateProduct();
+            updateProduct();
         } else {
-            // addProduct();
+            addProduct();
         }
 
         function addProduct() {
@@ -164,7 +164,6 @@ module.exports = function (module, appContext) {
                         price: req.body.price,
                         quantity: req.body.quantity,
                         description: req.body.description,
-                        image: req.body.image,
                         tax: req.body.tax,
                     }
                 },
@@ -314,7 +313,7 @@ module.exports = function (module, appContext) {
             if (err) {
                 console.log('err found ', err);
                 res.json({
-                    success: false,
+                    success: true,
                     message: err
                 });
             } else {

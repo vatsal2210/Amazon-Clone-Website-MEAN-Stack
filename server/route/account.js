@@ -186,8 +186,7 @@ module.exports = function (module, appContext) {
                                     }
                                     res.json({
                                         success: true,
-                                        message: 'A verification email has been sent to ' + user.email + '.',
-                                        token: jwtToken
+                                        message: 'Your account has not been verified. A verification email has been sent to ' + user.email + '.',
                                     });
                                 });
                             } else {
@@ -233,7 +232,6 @@ module.exports = function (module, appContext) {
                                             res.json({
                                                 success: false,
                                                 message: 'Your account has not been verified. A verification email has been sent to ' + user.email + '.',
-                                                token: jwtToken
                                             });
                                         });
                                     }
@@ -258,6 +256,7 @@ module.exports = function (module, appContext) {
                     res.json({
                         success: true,
                         message: message,
+                        manager: user.isManager,
                         user,
                         token
                     });
@@ -302,7 +301,7 @@ module.exports = function (module, appContext) {
                             message: err.message
                         });
                     }
-                    res.status(200).send("The account has been verified. Please log in.");
+                    res.status(200).send("Your account has been verified. Please log in.");
                 });
             });
         });
