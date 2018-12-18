@@ -18,7 +18,10 @@ module.exports = function (module, appContext) {
     app.get('/api/collections', checkJWT, (req, res, next) => {
         console.log('Find all collection details');
         Collection.find({
-                visibility: true
+                visibility: true,
+                userId: {
+                    $ne: req.decoded.user._id
+                }
             })
             .populate('userId')
             .populate('products.product')
@@ -45,7 +48,6 @@ module.exports = function (module, appContext) {
         console.log('Find all collection details');
 
         Collection.find({
-                visibility: true,
                 userId: req.decoded.user._id
             },
             function (err, collection) {
@@ -172,9 +174,7 @@ module.exports = function (module, appContext) {
             const description = req.body.description;
             // const productId = req.body.productId;
             const visibility = req.body.visibility;
-            //const userId = req.decoded.user._id;
-
-            console.log(productId);
+            //const userId = req.decoded.user._id;            
 
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -225,10 +225,6 @@ module.exports = function (module, appContext) {
             const id = req.body.id;
             const productId = req.body.productId;
             const status = req.body.status;
-
-            console.log(id);
-            console.log(productId);
-            console.log(status);
 
             if (status === 0) {
                 console.log('remove product');

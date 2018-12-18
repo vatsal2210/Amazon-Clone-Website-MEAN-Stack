@@ -63,8 +63,7 @@ module.exports = function (module, appContext) {
 
                 let validationToken = new Token();
                 validationToken.userId = user._id;
-                validationToken.token = crypto.randomBytes(16).toString('hex');
-                console.log(validationToken);
+                validationToken.token = crypto.randomBytes(16).toString('hex');                
                 validationToken.save();
 
                 // Send the email
@@ -105,8 +104,7 @@ module.exports = function (module, appContext) {
             min: 3
         })
         .withMessage('Password Must be at least 3 chars long'),
-    ], (req, res, next) => {
-        console.log('Login Request ', req.body);
+    ], (req, res, next) => {        
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             console.log('Login Validation error ', errors.array());
@@ -154,13 +152,11 @@ module.exports = function (module, appContext) {
                     }, function (err, data) {
                         if (err) {
                             console.log('Find User in Token DB error ', err);
-                        } else {
-                            console.log(data);
+                        } else {                            
                             if (data == null || data == undefined) {
                                 let validationToken = new Token();
                                 validationToken.userId = userId;
-                                validationToken.token = crypto.randomBytes(16).toString('hex');
-                                console.log(validationToken);
+                                validationToken.token = crypto.randomBytes(16).toString('hex');                                
                                 validationToken.save();
 
                                 // Send the email
@@ -251,8 +247,7 @@ module.exports = function (module, appContext) {
                         expiresIn: '7d'
                     });
 
-                    let message = user.isManager ? 'Token Generated for Admin!' : 'Token Generated for User!';
-                    console.log(message);
+                    let message = user.isManager ? 'Token Generated for Admin!' : 'Token Generated for User!';                    
                     res.json({
                         success: true,
                         message: message,
@@ -308,8 +303,7 @@ module.exports = function (module, appContext) {
     });
 
     /* Update user profile */
-    app.post('/api/updateprofile', (req, res, next) => {
-        console.log(req.body.name, req.body.id);
+    app.post('/api/updateprofile', (req, res, next) => {        
 
         User.findOneAndUpdate({
                 _id: req.body.id

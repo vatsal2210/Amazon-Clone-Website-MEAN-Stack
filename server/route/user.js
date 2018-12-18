@@ -475,9 +475,7 @@ module.exports = function (module, appContext) {
                     success: false,
                     message: err
                 });
-            } else {
-                console.log('Found cart info', result);
-
+            } else {                
                 var cartProduct = result.length;
                 var processProduct = 0;
 
@@ -495,9 +493,7 @@ module.exports = function (module, appContext) {
                     const id = data._id;
                     const Qty = data.products[0].quantity;
                     const productId = data.products[0].product;
-                    console.log(Qty);
-                    console.log(productId);
-
+                    
                     Product.update({
                         _id: productId
                     }, {
