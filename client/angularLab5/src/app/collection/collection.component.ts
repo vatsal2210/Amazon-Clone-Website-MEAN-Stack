@@ -50,9 +50,9 @@ export class CollectionComponent implements OnInit {
 
   /* Find All collections list */
   async collectionList() {
-    // const data = await this.rest.get('/api/collections');
-    // this.usercollection = data['collection'];
-    // console.log('this.usercollection', this.usercollection);
+    const data = await this.rest.get('/api/collections');
+    this.userCollections = data['collection'];
+    console.log('this.usercollection', this.userCollections);
   }
 
   /* Show products details */

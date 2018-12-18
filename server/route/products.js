@@ -49,13 +49,11 @@ module.exports = function (module, appContext) {
         console.log('Products page found');
         const perPage = 100;
         const page = req.query.page;
-        console.log('page ', page);        
 
         async.parallel([
             function (callback) {
                 Product.count({}, (err, count) => {
                     let totalProducts = count;
-                    console.log('Total Product ', totalProducts);
                     callback(err, totalProducts);
                 });
             },
@@ -72,33 +70,29 @@ module.exports = function (module, appContext) {
                         if (err) return next(err);
                         callback(err, products);
                     });
-            },           
+            },
         ], function (err, results) {
             let totalProducts = results[0];
-            let products = results[1];            
+            let products = results[1];
 
-            const topProducts = [];
-            console.log('products ', products);
-            for (let i = 0; i < products.length; i++) {
-                console.log(products[i].reviews.length);
+            const topProducts = [];            
+            for (let i = 0; i < products.length; i++) {                
                 if (products[i].reviews.length >= 2) {
                     topProducts.push(products[i]);
                 }
-            }
-            console.log(topProducts.length);
+            }            
             res.json({
                 success: true,
                 products,
                 totalProducts: totalProducts,
-                topProducts: topProducts,                
+                topProducts: topProducts,
                 pages: Math.ceil(totalProducts / perPage)
             });
         });
     });
 
     /* Find Product Details */
-    app.get('/api/findProduct/:id', function (req, res) {
-        console.log('Find Product Details ', req.params.id);
+    app.get('/api/findProduct/:id', function (req, res) {        
         const commentLimit = 2;
         Product.find({
                 _id: req.params.id

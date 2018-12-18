@@ -65,7 +65,6 @@ module.exports = function (module, appContext) {
             min: 1
         }).isNumeric(),
         check('tax').isNumeric().custom(tax => {
-            console.log(tax);
             if (tax == 0 || tax == 13) {
                 return true;
             } else {
@@ -82,7 +81,6 @@ module.exports = function (module, appContext) {
             });
         }
 
-        console.log(req.body.id);
         //console.log('file', JSON.stringify(req.body.file));
 
         // var upload = multer({ //multer settings
@@ -132,7 +130,6 @@ module.exports = function (module, appContext) {
                             message: 'Something went wrong. Try Again!',
                         });
                     } else {
-                        console.log(req.body);
 
                         product.save(function (err, item) { // Create User
                             if (err) {
@@ -317,9 +314,7 @@ module.exports = function (module, appContext) {
                     message: err
                 });
             } else {
-                console.log(req.body.status);
                 const visibilityStatus = req.body.status == 0 ? false : true;
-                console.log(visibilityStatus);
                 Review.updateOne({
                     _id: req.body.id
                 }, {
