@@ -1,6 +1,12 @@
 # ece9065-vshah56-lab5
 Web Technologies - Lab5
 
+Stack:
+
+Node js - 8.10.0
+Angular CLI - 7.0.7
+MongoDB shell version - v3.6.0
+
 Token Authentication:
 URL: https://codemoto.io/coding/nodejs/email-verification-node-express-mongodb
 
