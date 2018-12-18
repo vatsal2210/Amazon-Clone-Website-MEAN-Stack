@@ -9,7 +9,6 @@ const nodemon = require('nodemon');
 require('dotenv').config();
 
 const config = require('./config');
-//console.log(process.env.DB_HOST);
 const app = express();
 
 /* Connect Database */

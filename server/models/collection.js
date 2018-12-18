@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CollectionSchema = new Schema({
-    // owner: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'User'
-    // },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -19,7 +15,7 @@ const CollectionSchema = new Schema({
     },
     products: [{
         _id: false,
-        product: {            
+        product: {
             type: Schema.Types.ObjectId,
             ref: 'Product'
         },

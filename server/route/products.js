@@ -136,9 +136,6 @@ module.exports = function (module, appContext) {
     /* Review and Comment */
     app.post('/api/review', checkJWT, (req, res, next) => {
         console.log('Review submit');
-
-        /* Confirm before save */
-
         async.waterfall([
             function (callback) {
                 Product.findOne({
