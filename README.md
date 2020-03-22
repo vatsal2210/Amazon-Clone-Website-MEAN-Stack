@@ -1,30 +1,77 @@
-# ece9065-vshah56-lab5
-Web Technologies - Lab5
+# Amazon Clone Website with MEAN Stack
 
-Stack:
+## Description
+Develop a web application for a storefront that allows browsing items, creating, editing and saving a
+shopping cart, simulate purchasing items, managing a wish list and sharing it with other users and
+commenting on items.
+
+Use of Node.js and Angular v7 is required. Other technologies may include Mongodb and Express or any
+alternatives that suit you better.
+
+## Stack:
 
 Node js - 8.10.0
 Angular CLI - 7.0.7
 MongoDB shell version - v3.6.0
-
-Token Authentication:
-URL: https://codemoto.io/coding/nodejs/email-verification-node-express-mongodb
-
-NavBar Header:
-https://www.w3schools.com/bootstrap4/bootstrap_navbar.asp
-
-E-commerce View:
-https://mdbootstrap.com/docs/angular/sections/e-commerce/#APIref
-
-Validation:
-https://www.w3resource.com/javascript/form/email-validation.php
-
-Checkbox:
-https://stackoverflow.com/questions/34997128/angular-2-get-values-of-multiple-checked-checkboxes
-
-https://mdbootstrap.com/docs/angular/advanced/carousel/#multi-item-carousel
  
-Node JS:
+## Requirements (70 points)
+1. Authentication method: { total 10 points }
+	a. Local authentication which uses email as the username and require a password. { 4 points }
+	b. Input validation for email (proper format). { 1 point }
+	c. Password stored using a hashing algorithm that is resistant to brute force attacks (e.g. bcrypt). { 1
+	point }
+	d. Verification of of email (see References). { 3 points }
+	e. If the account is marked as deactivated, show a message asking to contact the store manager
+	    and not allow logging in: { 1 point }
+2. Limited functionality for unauthenticated users: { total 10 points }
+	a. Start page showing application name, a short “about” blurb that says what the site offers, and login
+	button. { 2 points }
+	b. List of purchasable items (up to 10) ordered by popularity (e.g. number of users who bought
+	that item or average rating). { 3 points }
+	c. Ability to browse the entire catalogue of items: { 2 points }
+	d. Clicking on an item shows a description about the item and price at the time of click. Live
+	updates are not necessary. { 1 point }
+	e. Item description includes upto 5 comments. Comments must show the rating, the comment
+	and commentor’s username: { 2 points }
+3. Additional functionality for authenticated users: { total 26 points }
+	a. Add items to a shopping cart: { 1 point }
+	b. Remove items in the shopping cart: { 1 point }
+	c. Change quantities of items in the shopping cart: { 1 point }
+	d. Clear the shopping cart: { 1 point }
+	e. A ‘Buy’ button to simulate the purchase of items in the shopping cart: { 1 point }
+	f. Ensure that item stock levels are updated through every action above: { 4 points }
+	g. Add a comment and a rating (1-5 stars) to any item: { 4 points }
+	h. Create a list of items and quantities with a name, a description and a visibility setting of
+	“private” (default) or “public”: { 6 points }
+	i. Edit all aspects of an own item collection: { 2 points }
+	j. View, delete or rename own item collections: { 2 points }
+	k. View item collections from other users that are marked as “public”: { 3 points }
+4. Store manager functionality related to store maintenance: { total 16 points }
+	a. Special user with store manager access: { 2 points }
+	b. Ability to grant store manager privilege to one or more existing users: { 2 points }
+	c. Ability to add/modify/delete items, quantities and prices: { 6 points }
+	d. Ability to mark a comment as hidden: { 2 points }
+	e. Ability to mark a user as “deactivated”: { 2 points }
+5. Web service API: { total 10 points }
+	a. Provide an API that has at least four nouns (URLs) and at least 8 separate noun+ HTTP verb
+	combinations. You must have at least two nouns that support two or more verbs. { 8 points }
+	b. Build your application using this API. { 2 points }
+6. Usability and code quality: { up to -24 points }
+	a. Resistant to HTML and JavaScript injection attacks: { up to -2 point }
+	b. Able to handle user input in any language: { up to -2 point }
+	c. Usability of the application on multiple browsers and form factors. { up to -2 point }
+	d. Modular code that is easily extensible and maintainable. { up to -2 point }
+	i. E.g. Changes to operational parameters such as server names, port numbers etc
+	should not cause changes in code.
+	e. Avoid code duplication. { up to -2 point }
+	i. E.g. Full URLs that are duplicated in calls to ReST api
+	f. Avoid hard-coded literals in code. { up to -5 points }
+	i. E.g. Hard-coded port numbers, URLS
+	g. Frequent git commits with meaningful comments { up to -2 points }
+	h. Sufficient and meaningful comments in code { up to -2 points }
+	i. Proper precautions in saving user information { up to -5 points } 
+ 
+## Node JS:
 
 server.js
 models:
@@ -79,7 +126,7 @@ route:
 		- /api/orderCart
 		
 	
-Angular:
+## Angular:
 	Services:
 		- alert.service
 		- restapi.service
@@ -98,4 +145,21 @@ Angular:
 		- profile
 		- regestration
 		
-		
+
+## Resources
+
+Token Authentication:
+URL: https://codemoto.io/coding/nodejs/email-verification-node-express-mongodb
+
+NavBar Header:
+https://www.w3schools.com/bootstrap4/bootstrap_navbar.asp
+
+E-commerce View:
+https://mdbootstrap.com/docs/angular/sections/e-commerce/#APIref
+
+Validation:
+https://www.w3resource.com/javascript/form/email-validation.php
+
+Checkbox:
+https://stackoverflow.com/questions/34997128/angular-2-get-values-of-multiple-checked-checkboxes
+https://mdbootstrap.com/docs/angular/advanced/carousel/#multi-item-carousel		
