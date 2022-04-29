@@ -4,7 +4,7 @@
   "description": "Angular Lab5 - Web Technologies",
   "main": "server.js",
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
