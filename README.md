@@ -159,7 +159,10 @@ https://www.w3resource.com/javascript/form/email-validation.php
 
 Checkbox:
 https://stackoverflow.com/questions/34997128/angular-2-get-values-of-multiple-checked-checkboxes
-https://mdbootstrap.com/docs/angular/advanced/carousel/#multi-item-carousel		
+https://mdbootstrap.com/docs/angular/advanced/carousel/#multi-item-carousel	
+
+Spacing:
+https://www.scaler.com/topics/css/bootstrap-spacing/
 
 <hr/>
 
